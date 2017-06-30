@@ -63,7 +63,7 @@ def binary(num):
 
 
 def cmd(dest, comp, jump):
-    return '111' + code.dest(dest) + code.comp(comp) + code.jump(jump)
+    return '111' + code.comp(comp) + code.dest(dest) + code.jump(jump)
 
 
 def command_type(cmd):
