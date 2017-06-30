@@ -37,16 +37,9 @@ class Symbol_Table():
         return symbol in self.table
 
     def get_address(self, symbol):
-        if symbol in self.table:
+        if symbol.isdigit():
+            return symbol
+        elif self.contains(symbol):
             return self.table[symbol]
         else:
-            return symbol
-
-
-if __name__ == '__main__':
-    st = Symbol_Table()
-    st.add_entry('test', 5)
-    st.add_entry('test2', 2)
-    st.contains('test')
-    print st.contains('test')
-    print st.get_address('test2')
+            raise 'Symbol not found %s' % symbol

@@ -1,7 +1,9 @@
 import unittest
 import assembler.parser as parser
+from assembler.symbol import Symbol_Table
 from textwrap import dedent
 from io import BytesIO
+from nose.tools import *
 
 code_1 = BytesIO("""
 (START)
@@ -28,9 +30,22 @@ compiled_1 = dedent("""\
 class tests(unittest.TestCase):
 
     def test_1(self):
+        '''Test parser'''
         out = parser.main(code_1)
         print out
         self.assertEqual(out, compiled_1)
+
+
+class symbol_tests(unittest.TestCase):
+
+    def test_symbols(self):
+        '''Test Symbol_Table'''
+        st = Symbol_Table()
+        st.add_entry('test', 5)
+        st.add_entry('test2', 2)
+        st.contains('test')
+        ok_(st.contains('test'))
+        ok_(st.get_address('test2'))
 
 
 if __name__ == '__main__':
