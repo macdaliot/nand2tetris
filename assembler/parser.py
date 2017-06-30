@@ -35,7 +35,7 @@ def build_vars(in_file):
 def parse(in_file):
     output = []
     for cur_cmd in in_file:
-        cur_cmd = cur_cmd.strip()
+        cur_cmd = cur_cmd.partition('//')[0].strip()
         if not cur_cmd or cur_cmd.startswith('//'):
             continue
         com_type = command_type(cur_cmd)
