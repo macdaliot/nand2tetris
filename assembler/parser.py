@@ -6,8 +6,7 @@ import pprint
 
 def init_labels(in_file):
     cmd_cnt = 0
-    for cur_cmd in in_file:
-        cur_cmd = cur_cmd.strip()
+    for cur_cmd in commands(in_file):
         com_type = command_type(cur_cmd)
         if com_type in ('A_COMMAND', 'C_COMMAND'):
             cmd_cnt += 1
@@ -19,8 +18,7 @@ def init_labels(in_file):
 
 def build_vars(in_file):
     global last_ram_addr
-    for cur_cmd in in_file:
-        cur_cmd = cur_cmd.strip()
+    for cur_cmd in commands(in_file):
         com_type = command_type(cur_cmd)
         if com_type == 'A_COMMAND':
             sym = symbol(cur_cmd, com_type)
@@ -34,10 +32,7 @@ def build_vars(in_file):
 
 def parse(in_file):
     output = []
-    for cur_cmd in in_file:
-        cur_cmd = cur_cmd.partition('//')[0].strip()
-        if not cur_cmd or cur_cmd.startswith('//'):
-            continue
+    for cur_cmd in commands(in_file):
         com_type = command_type(cur_cmd)
         if com_type in ('A_COMMAND'):
             sym = symbol(cur_cmd, com_type)
@@ -48,6 +43,13 @@ def parse(in_file):
             c = cmd(dest(cur_cmd), comp(cur_cmd), jump(cur_cmd))
             add_to_out(c, output)
     return output
+
+
+def commands(in_file):
+    for cmd in in_file:
+        cmd = cmd.partition('//')[0].strip()
+        if cmd and not cmd.startswith('//'):
+            yield cmd
 
 
 # def advance():
