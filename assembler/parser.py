@@ -25,7 +25,7 @@ def build_vars(in_file):
         if com_type == 'A_COMMAND':
             sym = symbol(cur_cmd, com_type)
             # print symbols
-            if sym not in symbols.table:
+            if not sym.isdigit() and sym not in symbols.table:
                 # print 'adding', sym, last_ram_addr
                 symbols.add_entry(sym, last_ram_addr)
                 last_ram_addr += 1
