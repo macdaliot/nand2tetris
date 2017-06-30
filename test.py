@@ -43,9 +43,8 @@ class symbol_tests(unittest.TestCase):
         st = Symbol_Table()
         st.add_entry('test', 5)
         st.add_entry('test2', 2)
-        st.contains('test')
         ok_(st.contains('test'))
-        ok_(st.get_address('test2'))
+        eq_(st.get_address('test2'), 2)
 
 
 if __name__ == '__main__':
