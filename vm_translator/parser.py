@@ -2,8 +2,15 @@ class Parser():
     def __init__(self, data):
         self.data = data
 
+    def parse(self):
+        for cmd in self.next_command():
+            print cmd
+
     def next_command(self):
-        return self.data.nextline()
+        for line in self.data:
+            line = line.strip().split('//')[0]
+            if line and not line.startswith('//'):
+                yield line
 
     def command_type(self, cmd):
         if cmd:
@@ -26,8 +33,8 @@ class Parser():
             return 'C_CALL'
 
     def arg1(self, cmd):
-        return cmd.split()[0]
+        return cmd.split()[1]
 
     def arg2(self, cmd):
-        return cmd.split()[1]
+        return cmd.split()[2]
 
