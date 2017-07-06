@@ -34,6 +34,11 @@ class Parser():
             return 'C_CALL'
 
     def arg1(self, cmd):
+        cmd_type = self.command_type(cmd)
+        assert cmd_type != 'C_RETURN', \
+            'Cannot get arg1 from return command.'
+        if cmd_type == 'C_ARITHMETIC':
+            return cmd
         return cmd.split()[1]
 
     def arg2(self, cmd):
