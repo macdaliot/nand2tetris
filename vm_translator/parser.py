@@ -2,12 +2,12 @@ from errors import *
 
 
 class Parser():
-    def __init__(self, data):
+    def __init__(self, data=None):
         self.data = data
 
     def parse(self):
         for cmd in self.next_command():
-            print cmd
+            yield cmd
 
     def next_command(self):
         for line in self.data:
