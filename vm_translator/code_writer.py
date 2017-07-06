@@ -3,8 +3,8 @@ class CodeWriter():
         self.outfile = outfile
         self.writer = open(self.outfile, 'w+')
 
-    def set_filename(self):
-        pass
+    def set_filename(self, filename):
+        self.filename = filename
 
     def write_arithmetic(self, cmd):
         pass
