@@ -1,7 +1,8 @@
 class CodeWriter():
-    def __init__(self, outfile):
+    def __init__(self, outfile=None):
         self.outfile = outfile
-        self.writer = open(self.outfile, 'w+')
+        if self.outfile:
+            self.writer = open(self.outfile, 'w+')
 
     def set_filename(self, filename):
         self.filename = filename
