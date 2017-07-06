@@ -49,8 +49,20 @@ class test_parser(unittest.TestCase):
     def test_get_2nd_arg(self):
         '''Test getting the 2nd arg of a command'''
         parser = Parser(code_1)
-        cmd = 'push local 1'
-        eq_(parser.arg2(cmd), '1')
+        eq_(parser.arg2('push local 1'), '1')
+
+    def test_command_type_arithmetic(self):
+        '''Test getting command type of arithmetic commands'''
+        parser = Parser(code_1)
+        eq_(parser.command_type('add'), 'C_ARITHMETIC')
+        eq_(parser.command_type('sub'), 'C_ARITHMETIC')
+        eq_(parser.command_type('neg'), 'C_ARITHMETIC')
+        eq_(parser.command_type('eq'), 'C_ARITHMETIC')
+        eq_(parser.command_type('gt'), 'C_ARITHMETIC')
+        eq_(parser.command_type('lt'), 'C_ARITHMETIC')
+        eq_(parser.command_type('and'), 'C_ARITHMETIC')
+        eq_(parser.command_type('or'), 'C_ARITHMETIC')
+        eq_(parser.command_type('not'), 'C_ARITHMETIC')
 
 
 if __name__ == '__main__':
