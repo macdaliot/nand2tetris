@@ -38,8 +38,13 @@ class test_parser(unittest.TestCase):
     def test_get_1st_arg(self):
         '''Test getting the 1st arg of a command'''
         parser = Parser(code_1)
-        cmd = 'push local 1'
-        eq_(parser.arg1(cmd), 'local')
+        eq_(parser.arg1('push local 1'), 'local')
+        eq_(parser.arg1('add'), 'add')
+
+    def test_get_1st_arg_from_return(self):
+        '''Test getting the 1st arg of return command'''
+        parser = Parser(code_1)
+        self.assertRaises(AssertionError, parser.arg1, 'return')
 
     def test_get_2nd_arg(self):
         '''Test getting the 2nd arg of a command'''
