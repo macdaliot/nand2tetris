@@ -14,6 +14,11 @@ blank_lines = BytesIO("""
 
 """)
 
+comments = BytesIO("""
+// a comment
+an inline comment // commented
+""")
+
 
 class test_parser(unittest.TestCase):
 
@@ -25,6 +30,10 @@ class test_parser(unittest.TestCase):
     def test_skip_blank_lines(self):
         parser = Parser(blank_lines)
         self.assertRaises(StopIteration, parser.parse().next)
+
+    def test_skip_comments(self):
+        parser = Parser(comments)
+        eq_(parser.parse().next(), 'an inline comment ')
 
     def test_get_1st_arg(self):
         '''Test getting the 1st arg of a command'''
