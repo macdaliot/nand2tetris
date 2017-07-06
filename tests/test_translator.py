@@ -1,5 +1,5 @@
 import unittest
-from vm_translator.parser import Parser
+from vm_translator.parser import Parser, UnknownCmdError
 from io import BytesIO
 from nose.tools import *
 
@@ -50,6 +50,11 @@ class test_parser(unittest.TestCase):
         '''Test getting the 2nd arg of a command'''
         parser = Parser(code_1)
         eq_(parser.arg2('push local 1'), '1')
+
+    def test_unknown_command(self):
+        '''Raises error when passed unknown command type'''
+        parser = Parser()
+        self.assertRaises(UnknownCmdError, parser.command_type, 'blah')
 
     def test_command_type_arithmetic(self):
         '''Test getting command type of arithmetic commands'''

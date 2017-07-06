@@ -1,3 +1,6 @@
+from errors import *
+
+
 class Parser():
     def __init__(self, data):
         self.data = data
@@ -32,6 +35,8 @@ class Parser():
             return 'C_RETURN'
         elif cmd.startswith('call'):
             return 'C_CALL'
+        else:
+            raise UnknownCmdError(cmd)
 
     def arg1(self, cmd):
         cmd_type = self.command_type(cmd)
