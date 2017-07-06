@@ -13,6 +13,22 @@ class CodeWriter():
     def write_push_pop(self, cmd):
         pass
 
+    def make_arithmetic(self, cmd):
+        pass
+
+    def make_push_pop(self, cmd, segment, index):
+            if cmd == 'C_PUSH':
+                self.make_push(self, cmd, segment, index)
+            elif cmd == 'C_POP':
+                self.make_pop(self, cmd, segment, index)
+
+    def make_push(self, cmd, segment, index):
+        out = []
+        out.append('@%s' % segment)
+        out.append('D=M')
+        return out
+
+
     def close(self):
         self.writer.close()
 

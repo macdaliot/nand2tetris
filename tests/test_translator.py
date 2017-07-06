@@ -1,5 +1,6 @@
 import unittest
 from vm_translator.parser import Parser, UnknownCmdError
+from vm_translator.code_writer import *
 from io import BytesIO
 from nose.tools import *
 
@@ -68,6 +69,14 @@ class test_parser(unittest.TestCase):
         eq_(parser.command_type('and'), 'C_ARITHMETIC')
         eq_(parser.command_type('or'), 'C_ARITHMETIC')
         eq_(parser.command_type('not'), 'C_ARITHMETIC')
+
+
+class test_code_writer(unittest.TestCase):
+
+    def test_make_push(self):
+        writer = CodeWriter()
+        eq_(writer.make_push('push', 'local', 5),
+            ['@local', 'D=M'])
 
 
 if __name__ == '__main__':
