@@ -13,23 +13,24 @@ class Parser():
                 yield line
 
     def command_type(self, cmd):
-        if cmd:
+        if cmd in ('add', 'sub', 'neg', 'eq',
+                   'gt', 'lt', 'and', 'or', 'not'):
             return 'C_ARITHMETIC'
-        elif cmd:
+        elif cmd.startswith('push'):
             return 'C_PUSH'
-        elif cmd:
+        elif cmd.startswith('pop'):
             return 'C_POP'
-        elif cmd:
+        elif cmd.startswith('label'):
             return 'C_LABEL'
-        elif cmd:
+        elif cmd.startswith('goto'):
             return 'C_GOTO'
-        elif cmd:
+        elif cmd.startswith('if-goto'):
             return 'C_IF'
-        elif cmd:
+        elif cmd.startswith('function'):
             return 'C_FUNCTION'
-        elif cmd:
+        elif cmd == 'return':
             return 'C_RETURN'
-        elif cmd:
+        elif cmd.startswith('call'):
             return 'C_CALL'
 
     def arg1(self, cmd):
