@@ -8,7 +8,10 @@ push local 1
 pop local 2
 push this 3 // test comment
 add
-gt this that
+gt this that""")
+
+blank_lines = BytesIO("""
+
 """)
 
 
@@ -18,6 +21,10 @@ class test_parser(unittest.TestCase):
         '''Test vm translator parser'''
         parser = Parser(code_1)
         parser.parse()
+
+    def test_skip_blank_lines(self):
+        parser = Parser(blank_lines)
+        self.assertRaises(StopIteration, parser.parse().next)
 
     def test_get_1st_arg(self):
         '''Test getting the 1st arg of a command'''
