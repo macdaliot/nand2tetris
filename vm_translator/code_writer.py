@@ -17,12 +17,18 @@ class CodeWriter():
         pass
 
     def make_push_pop(self, cmd, segment, index):
-            if cmd == 'C_PUSH':
-                self.make_push(self, cmd, segment, index)
-            elif cmd == 'C_POP':
-                self.make_pop(self, cmd, segment, index)
+            if cmd == 'push':
+                return self.make_push(cmd, segment, index)
+            elif cmd == 'pop':
+                return self.make_pop(cmd, segment, index)
 
     def make_push(self, cmd, segment, index):
+        out = []
+        out.append('@%s' % segment)
+        out.append('D=M')
+        return out
+
+    def make_pop(self, cmd, segment, index):
         out = []
         out.append('@%s' % segment)
         out.append('D=M')

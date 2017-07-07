@@ -78,6 +78,18 @@ class test_code_writer(unittest.TestCase):
         eq_(writer.make_push('push', 'local', 5),
             ['@local', 'D=M'])
 
+    def test_make_pop(self):
+        writer = CodeWriter()
+        eq_(writer.make_pop('pop', 'local', 5),
+            ['@local', 'D=M'])
+
+    def test_make_pop_push(self):
+        writer = CodeWriter()
+        eq_(writer.make_push_pop('push', 'local', 5),
+            ['@local', 'D=M'])
+        eq_(writer.make_push_pop('pop', 'local', 5),
+            ['@local', 'D=M'])
+
 
 if __name__ == '__main__':
     unittest.main()
