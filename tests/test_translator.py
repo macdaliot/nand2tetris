@@ -76,7 +76,16 @@ class test_code_writer(unittest.TestCase):
     def test_make_push(self):
         writer = CodeWriter()
         eq_(writer.make_push('push', 'local', 5),
-            ['@local', 'D=M'])
+            ['@local',
+             'D=A',
+             '@5',
+             'A=D+A',
+             'D=M',
+             '@SP',
+             'A=M',
+             'M=D',
+             '@SP',
+             'M=M+1'])
 
     def test_make_pop(self):
         writer = CodeWriter()

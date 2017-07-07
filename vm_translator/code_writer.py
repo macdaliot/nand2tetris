@@ -25,7 +25,15 @@ class CodeWriter():
     def make_push(self, cmd, segment, index):
         out = []
         out.append('@%s' % segment)
+        out.append('D=A')
+        out.append('@%s' % index)
+        out.append('A=D+A')
         out.append('D=M')
+        out.append('@SP')
+        out.append('A=M')
+        out.append('M=D')
+        out.append('@SP')
+        out.append('M=M+1')
         return out
 
     def make_pop(self, cmd, segment, index):
