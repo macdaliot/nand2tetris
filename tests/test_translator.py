@@ -71,12 +71,7 @@ class test_parser(unittest.TestCase):
         eq_(parser.command_type('not'), 'C_ARITHMETIC')
 
 
-class test_code_writer(unittest.TestCase):
-
-    def test_make_push(self):
-        writer = CodeWriter()
-        eq_(writer.make_push('push', 'local', 5),
-            ['@local',
+push_code = ['@local',
              'D=A',
              '@5',
              'A=D+A',
@@ -85,19 +80,45 @@ class test_code_writer(unittest.TestCase):
              'A=M',
              'M=D',
              '@SP',
-             'M=M+1'])
+             'M=M+1']
 
-    def test_make_pop(self):
-        writer = CodeWriter()
-        eq_(writer.make_pop('pop', 'local', 5),
-            ['@local', 'D=M'])
+pop_code = ['@SP',
+            'A=M',
+            'M=0',
+            '@SP',
+            'M=M-1',
+            'A=M',
+            'D=M',
+            '@5',
+            'M=D',
+            '@local',
+            'D=A',
+            '@5',
+            'A=D+A',
+            '@6',
+            'M=A',
+            '@5',
+            'D=M',
+            '@6',
+            'A=M',
+            'M=D']
 
-    def test_make_pop_push(self):
+
+class test_code_writer(unittest.TestCase):
+
+    def test_push(self):
         writer = CodeWriter()
-        eq_(writer.make_push_pop('push', 'local', 5),
-            ['@local', 'D=M'])
-        eq_(writer.make_push_pop('pop', 'local', 5),
-            ['@local', 'D=M'])
+        eq_(writer.push('push', 'local', 5), push_code)
+
+    def test_pop(self):
+        writer = CodeWriter()
+        eq_(writer.pop('pop', 'local', 5), pop_code)
+
+
+    def test_push_pop(self):
+        writer = CodeWriter()
+        eq_(writer.push_pop('push', 'local', 5), push_code)
+        eq_(writer.push_pop('pop', 'local', 5), pop_code)
 
 
 if __name__ == '__main__':
