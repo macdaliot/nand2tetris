@@ -1,8 +1,8 @@
 How to use assembler
 ====================
 
-```
-python assembler prog.hack
+```bash
+$ python assembler prog.asm
 
 # prints
 # 0000000000010000
@@ -14,5 +14,47 @@ python assembler prog.hack
 # 0000000000010011
 
 # and creates file
-# prog.asm
+# prog.hack
+```
+
+
+How to use vm_translator
+========================
+
+```bash
+# test.vm
+# // Pushes and adds two constants.
+# push constant 7
+# push constant 8
+# add
+
+$ python vm_translator test.vm
+
+# outputs file in assembly (test.asm)
+$ cat test.asm
+@7
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@8
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D+M
+M=D
+@SP
+M=M+1
 ```
