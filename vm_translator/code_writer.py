@@ -8,10 +8,12 @@ class CodeWriter():
         self.filename = filename
 
     def write_arithmetic(self, cmd):
-        self.writer.writelines(self.arithmetic(cmd))
+        self.writer.writelines('\n'.join(self.arithmetic(cmd)))
 
     def write_push_pop(self, cmd, segment, index):
-        self.writer.writelines(self.push_pop(cmd, segment, index))
+        instructions = self.push_pop(cmd, segment, index)
+        for instr in instructions:
+            self.writer.write('%s\n' % instr)
 
     def arithmetic(self, cmd):
         if cmd == 'add':
@@ -33,9 +35,9 @@ class CodeWriter():
         return out
 
     def push_pop(self, cmd, segment, index):
-            if cmd == 'push':
+            if cmd.startswith('push'):
                 return self.push(cmd, segment, index)
-            elif cmd == 'pop':
+            elif cmd.startswith('pop'):
                 return self.pop(cmd, segment, index)
 
     def push(self, cmd, segment, index):

@@ -2,11 +2,18 @@ from errors import *
 
 
 class Parser():
-    def __init__(self, data=None):
+    def __init__(self, data=None, writer=None):
         self.data = data
+        self.writer = writer
 
     def parse(self):
         for cmd in self.next_command():
+            if cmd == 'add':
+                self.writer.write_arithmetic(cmd)
+            if cmd.startswith('push') or cmd.startswith('pop'):
+                arg1 = self.arg1(cmd)
+                arg2 = self.arg2(cmd)
+                self.writer.write_push_pop(cmd, arg1, arg2)
             yield cmd
 
     def next_command(self):
