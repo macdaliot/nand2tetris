@@ -24,11 +24,15 @@ class CodeWriter():
 
     def push(self, cmd, segment, index):
         out = []
-        out.append('@%s' % segment)
-        out.append('D=A')
-        out.append('@%s' % index)
-        out.append('A=D+A')  # A = segment[index]
-        out.append('D=M')  # Store value at A
+        if segment == 'constant':
+            out.append('@%s' % index)
+            out.append('D=A')
+        else:
+            out.append('@%s' % segment)
+            out.append('D=A')
+            out.append('@%s' % index)
+            out.append('A=D+A')  # A = segment[index]
+            out.append('D=M')  # Store value at A
         out.append('@SP')
         out.append('A=M')  # Get addr of SP
         out.append('M=D')  # Set M[SP] = segment[index]

@@ -82,6 +82,14 @@ push_code = ['@local',
              '@SP',
              'M=M+1']
 
+push_code_constant = ['@12',
+                      'D=A',
+                      '@SP',
+                      'A=M',
+                      'M=D',
+                      '@SP',
+                      'M=M+1']
+
 pop_code = ['@SP',
             'A=M',
             'M=0',
@@ -109,6 +117,7 @@ class test_code_writer(unittest.TestCase):
     def test_push(self):
         writer = CodeWriter()
         eq_(writer.push('push', 'local', 5), push_code)
+        eq_(writer.push('push', 'constant', 12), push_code_constant)
 
     def test_pop(self):
         writer = CodeWriter()
