@@ -13,8 +13,22 @@ class CodeWriter():
     def write_push_pop(self, cmd):
         pass
 
-    def make_arithmetic(self, cmd):
-        pass
+    def arithmetic(self, cmd):
+        if cmd == 'add':
+            return self.add(cmd)
+
+    def add(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=D+M')  # Add x + y
+        out.append('M=D')  # Save result
+        return out
 
     def push_pop(self, cmd, segment, index):
             if cmd == 'push':
