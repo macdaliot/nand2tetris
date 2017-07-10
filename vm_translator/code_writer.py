@@ -28,6 +28,8 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=D+M')  # Add x + y
         out.append('M=D')  # Save result
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
         return out
 
     def push_pop(self, cmd, segment, index):
