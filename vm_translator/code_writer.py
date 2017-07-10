@@ -8,10 +8,10 @@ class CodeWriter():
         self.filename = filename
 
     def write_arithmetic(self, cmd):
-        pass
+        self.writer.writelines(self.arithmetic(cmd))
 
-    def write_push_pop(self, cmd):
-        pass
+    def write_push_pop(self, cmd, segment, index):
+        self.writer.writelines(self.push_pop(cmd, segment, index))
 
     def arithmetic(self, cmd):
         if cmd == 'add':
