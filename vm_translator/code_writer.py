@@ -8,10 +8,14 @@ class CodeWriter():
         self.filename = filename
 
     def write_arithmetic(self, cmd):
-        self.writer.writelines('\n'.join(self.arithmetic(cmd)))
+        instructions = self.arithmetic(cmd)
+        self.write_instructions(instructions)
 
     def write_push_pop(self, cmd, segment, index):
         instructions = self.push_pop(cmd, segment, index)
+        self.write_instructions(instructions)
+
+    def write_instructions(self, instructions):
         for instr in instructions:
             self.writer.write('%s\n' % instr)
 
@@ -20,6 +24,20 @@ class CodeWriter():
             return self.add(cmd)
         elif cmd == 'sub':
             return self.sub(cmd)
+        elif cmd == 'neg':
+            return self.neg(cmd)
+        elif cmd == 'eq':
+            return self.eq(cmd)
+        elif cmd == 'gt':
+            return self.gt(cmd)
+        elif cmd == 'lt':
+            return self.lt(cmd)
+        elif cmd == 'and':
+            return self._and(cmd)
+        elif cmd == 'or':
+            return self._or(cmd)
+        elif cmd == 'not':
+            return self._not(cmd)
 
     def add(self, cmd):
         out = []
@@ -32,7 +50,7 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=D+M')  # x + y
         out.append('M=D')  # Save result
-        out.appends('@SP')
+        out.append('@SP')
         out.append('M=M+1')  # Increment SP
         return out
 
@@ -47,6 +65,119 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=M-D')  # x - y
         out.append('M=D')  # Save result
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def neg(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('M=-M')  # Set D = -M[SP]
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def eq(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M-D')
+        out.append('M=-1')
+        out.append('@EQ')
+        out.append('D;JEQ')  # If neq jump to NEQ
+        out.append('@SP')
+        out.append('A=M')
+        out.append('M=0')  # Set to false
+        out.append('(EQ)')
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def gt(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M-D')
+        out.append('M=-1')
+        out.append('@GT')
+        out.append('D;JGT')  # If greater than jump to GT
+        out.append('@SP')
+        out.append('A=M')
+        out.append('M=0')  # Set to false
+        out.append('(GT)')
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def lt(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M-D')
+        out.append('M=-1')
+        out.append('@LT')
+        out.append('D;JLT')  # If less than jump to LT
+        out.append('@SP')
+        out.append('A=M')
+        out.append('M=0')  # Set to false
+        out.append('(LT)')
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def _and(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=D&M')  # x & y
+        out.append('M=D')  # Save result
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def _or(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=D|M')  # x | y
+        out.append('M=D')  # Save result
+        out.append('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def _not(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('M=!M')  # Set D = !M[SP]
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
         return out

@@ -8,7 +8,7 @@ class Parser():
 
     def parse(self):
         for cmd in self.next_command():
-            if cmd == 'add':
+            if self.command_type(cmd) == 'C_ARITHMETIC':
                 self.writer.write_arithmetic(cmd)
             if cmd.startswith('push') or cmd.startswith('pop'):
                 arg1 = self.arg1(cmd)
