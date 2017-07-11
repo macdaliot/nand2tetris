@@ -3,6 +3,9 @@ class CodeWriter():
         self.outfile = outfile
         if self.outfile:
             self.writer = open(self.outfile, 'w+')
+        self.eq_ct = 0
+        self.gt_ct = 0
+        self.lt_ct = 0
 
     def set_filename(self, filename):
         self.filename = filename
@@ -90,14 +93,15 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=M-D')
         out.append('M=-1')
-        out.append('@EQ')
+        out.append('@EQ%s' % self.eq_ct)
         out.append('D;JEQ')  # If neq jump to NEQ
         out.append('@SP')
         out.append('A=M')
         out.append('M=0')  # Set to false
-        out.append('(EQ)')
+        out.append('(EQ%s)' % self.eq_ct)
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
+        self.eq_ct += 1
         return out
 
     def gt(self, cmd):
@@ -111,14 +115,15 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=M-D')
         out.append('M=-1')
-        out.append('@GT')
+        out.append('@GT%s' % self.gt_ct)
         out.append('D;JGT')  # If greater than jump to GT
         out.append('@SP')
         out.append('A=M')
         out.append('M=0')  # Set to false
-        out.append('(GT)')
+        out.append('(GT%s)' % self.gt_ct)
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
+        self.gt_ct += 1
         return out
 
     def lt(self, cmd):
@@ -132,14 +137,15 @@ class CodeWriter():
         out.append('A=M')
         out.append('D=M-D')
         out.append('M=-1')
-        out.append('@LT')
+        out.append('@LT%s' % self.lt_ct)
         out.append('D;JLT')  # If less than jump to LT
         out.append('@SP')
         out.append('A=M')
         out.append('M=0')  # Set to false
-        out.append('(LT)')
+        out.append('(LT%s)' % self.lt_ct)
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
+        self.lt_ct += 1
         return out
 
     def _and(self, cmd):
