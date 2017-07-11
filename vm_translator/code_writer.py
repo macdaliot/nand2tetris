@@ -18,6 +18,8 @@ class CodeWriter():
     def arithmetic(self, cmd):
         if cmd == 'add':
             return self.add(cmd)
+        elif cmd == 'sub':
+            return self.sub(cmd)
 
     def add(self, cmd):
         out = []
@@ -28,7 +30,22 @@ class CodeWriter():
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
-        out.append('D=D+M')  # Add x + y
+        out.append('D=D+M')  # x + y
+        out.append('M=D')  # Save result
+        out.appends('@SP')
+        out.append('M=M+1')  # Increment SP
+        return out
+
+    def sub(self, cmd):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')  # Set D = M[SP]
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M-D')  # x - y
         out.append('M=D')  # Save result
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
