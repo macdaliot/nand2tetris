@@ -1,7 +1,5 @@
-import sys
 import code
 from symbol import Symbol_Table
-import pprint
 
 
 def init_labels(in_file):
@@ -57,7 +55,7 @@ def commands(in_file):
 
 def add_to_out(l, out):
     out.append(l)
-    print l
+    # print l
 
 
 def binary(num):

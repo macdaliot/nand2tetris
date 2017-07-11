@@ -6,23 +6,29 @@ class Parser():
         self.data = data
         self.writer = writer
 
+    def write_command(self, cmd):
+        if not self.writer:
+            return
+        if self.command_type(cmd) == 'C_ARITHMETIC':
+            self.writer.write_arithmetic(cmd)
+        if cmd.startswith('push') or cmd.startswith('pop'):
+            arg1 = self.arg1(cmd)
+            arg2 = self.arg2(cmd)
+            self.writer.write_push_pop(cmd, arg1, arg2)
+
     def parse(self):
         for cmd in self.next_command():
-            if self.command_type(cmd) == 'C_ARITHMETIC':
-                self.writer.write_arithmetic(cmd)
-            if cmd.startswith('push') or cmd.startswith('pop'):
-                arg1 = self.arg1(cmd)
-                arg2 = self.arg2(cmd)
-                self.writer.write_push_pop(cmd, arg1, arg2)
+            self.write_command(cmd)
             yield cmd
 
     def next_command(self):
         for line in self.data:
             line = line.strip().split('//')[0]
             if line and not line.startswith('//'):
-                yield line
+                yield line.strip()
 
     def command_type(self, cmd):
+        cmd = cmd.strip()
         if cmd in ('add', 'sub', 'neg', 'eq',
                    'gt', 'lt', 'and', 'or', 'not'):
             return 'C_ARITHMETIC'

@@ -32,7 +32,7 @@ class tests(unittest.TestCase):
     def test_1(self):
         '''Test parser'''
         out = parser.main(code_1)
-        print out
+        # print out
         self.assertEqual(out, compiled_1)
 
 
