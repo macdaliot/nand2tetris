@@ -94,7 +94,7 @@ class CodeWriter():
         out.append('D=M-D')
         out.append('M=-1')
         out.append('@EQ%s' % self.eq_ct)
-        out.append('D;JEQ')  # If neq jump to NEQ
+        out.append('D;JEQ')  # If eq jump to EQ
         out.append('@SP')
         out.append('A=M')
         out.append('M=0')  # Set to false
