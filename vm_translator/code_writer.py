@@ -10,6 +10,9 @@ class CodeWriter():
     def set_filename(self, filename):
         self.filename = filename
 
+    def write_init(self):
+        pass
+
     def write_arithmetic(self, cmd):
         instructions = self.arithmetic(cmd)
         self.write_instructions(instructions)
@@ -17,6 +20,21 @@ class CodeWriter():
     def write_push_pop(self, cmd, segment, index):
         instructions = self.push_pop(cmd, segment, index)
         self.write_instructions(instructions)
+
+    def write_label(self, label):
+        pass
+
+    def write_goto(self, label):
+        pass
+
+    def write_if(self, label):
+        pass
+
+    def write_call(self, func_name, num_args):
+        pass
+
+    def write_function(self, func_name, num_locals):
+        pass
 
     def write_instructions(self, instructions):
         for instr in instructions:
