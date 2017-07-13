@@ -6,12 +6,22 @@ class CodeWriter():
         self.eq_ct = 0
         self.gt_ct = 0
         self.lt_ct = 0
+        self.write_init()
 
     def set_filename(self, filename):
         self.filename = filename
 
     def write_init(self):
-        pass
+        instructions = self.init()
+        self.write_instructions(instructions)
+
+    def init(self):
+        out = []
+        out.append('@256')
+        out.append('D=A')
+        out.append('@SP')
+        out.append('M=D')
+        return out
 
     def write_arithmetic(self, cmd):
         instructions = self.arithmetic(cmd)
