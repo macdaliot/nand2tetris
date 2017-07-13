@@ -246,11 +246,13 @@ class CodeWriter():
         elif segment == 'temp':
             out.append('@5')
             out.append('D=A')
+        elif segment == 'static':
+            out.append('@%s.%s' % (self.filename, index))
         else:
             out.append('@%s' % segment)
             out.append('D=M')
-        out.append('@%s' % index)
-        out.append('A=D+A')  # A = segment[index]
+            out.append('@%s' % index)
+            out.append('A=D+A')  # A = segment[index]
         return out
 
     def pop(self, cmd, segment, index):
