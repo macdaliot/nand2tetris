@@ -224,18 +224,16 @@ class CodeWriter():
 
     def push(self, cmd, segment, index):
         out = []
+        out.append('// pushing %s %s' % (segment, index))
         if segment == 'constant':
             out.append('@%s' % index)
             out.append('D=A')
         else:
-            out.append('@%s' % segment)
-            out.append('D=A')
-            out.append('@%s' % index)
-            out.append('A=D+A')  # A = segment[index]
-            out.append('D=M')  # Store value at A
+            out.extend(self.deref(segment, index))
+            out.append('D=M')
         out.append('@SP')
-        out.append('A=M')  # Get addr of SP
-        out.append('M=D')  # Set M[SP] = segment[index]
+        out.append('A=M')  # Get addr from SP
+        out.append('M=D')  # Set M[SP] = segment[index] or constant
         out.append('@SP')
         out.append('M=M+1')  # Increment SP to next empty pos
         return out
@@ -257,6 +255,7 @@ class CodeWriter():
 
     def pop(self, cmd, segment, index):
         out = []
+        out.append('// popping %s %s' % (segment, index))
         out.append('@SP')
         out.append('A=M')  # Get addr of SP
         out.append('M=0')  # Zero out M[SP]
@@ -264,17 +263,15 @@ class CodeWriter():
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
         out.append('D=M')  # Set D = M[SP]
-        out.append('@5')
+        out.append('@13')
         out.append('M=D')  # R5 = M[SP]
-        out.append('@%s' % segment)
+        out.extend(self.deref(segment, index))
         out.append('D=A')
-        out.append('@%s' % index)
-        out.append('A=D+A')  # Set A to segment[index]
-        out.append('@6')
-        out.append('M=A')  # R6 = addr segment[index]
-        out.append('@5')
-        out.append('D=M')  # R5 = M[SP]
-        out.append('@6')
+        out.append('@14')
+        out.append('M=D')  # R6 = addr segment[index]
+        out.append('@13')
+        out.append('D=M')  # D = M[SP]
+        out.append('@14')
         out.append('A=M')
         out.append('M=D')  # Set segment[index] = M[SP]
         return out
