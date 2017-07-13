@@ -57,8 +57,16 @@ class Parser():
             'Cannot get arg1 from return command.'
         if cmd_type == 'C_ARITHMETIC':
             return cmd
-        return cmd.split()[1]
+        arg1 = cmd.split()[1]
+        return segment_map[arg1]
 
     def arg2(self, cmd):
         return cmd.split()[2]
 
+
+segment_map = {
+    'local': 'LCL',
+    'argument': 'ARG',
+    'this': 'THIS',
+    'that': 'THAT'
+}
