@@ -240,6 +240,21 @@ class CodeWriter():
         out.append('M=M+1')  # Increment SP to next empty pos
         return out
 
+    def deref(self, segment, index):
+        out = []
+        if segment == 'pointer':
+            out.append('@3')
+            out.append('D=A')
+        elif segment == 'temp':
+            out.append('@5')
+            out.append('D=A')
+        else:
+            out.append('@%s' % segment)
+            out.append('D=M')
+        out.append('@%s' % index)
+        out.append('A=D+A')  # A = segment[index]
+        return out
+
     def pop(self, cmd, segment, index):
         out = []
         out.append('@SP')
