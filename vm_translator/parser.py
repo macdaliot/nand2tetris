@@ -58,7 +58,9 @@ class Parser():
         if cmd_type == 'C_ARITHMETIC':
             return cmd
         arg1 = cmd.split()[1]
-        return segment_map[arg1]
+        if arg1 in segment_map:
+            return segment_map[arg1]
+        return arg1
 
     def arg2(self, cmd):
         return cmd.split()[2]
