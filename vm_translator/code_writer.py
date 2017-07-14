@@ -206,7 +206,6 @@ class CodeWriter():
 
     def push(self, cmd, segment, index):
         out = []
-        out.append('// pushing %s %s' % (segment, index))
         if segment == 'constant':
             out.append('@%s' % index)
             out.append('D=A')
@@ -218,6 +217,7 @@ class CodeWriter():
         out.append('M=D')  # Set M[SP] = segment[index] or constant
         out.append('@SP')
         out.append('M=M+1')  # Increment SP to next empty pos
+        out[0] += '  // pushing %s %s' % (segment, index)
         return out
 
     def deref(self, segment, index):
@@ -239,7 +239,6 @@ class CodeWriter():
 
     def pop(self, cmd, segment, index):
         out = []
-        out.append('// popping %s %s' % (segment, index))
         out.append('@SP')
         out.append('A=M')  # Get addr of SP
         out.append('M=0')  # Zero out M[SP]
@@ -255,6 +254,7 @@ class CodeWriter():
         out.append('@14')
         out.append('A=M')
         out.append('M=D')  # Set segment[index] = M[SP]
+        out[0] += '  // popping %s %s' % (segment, index)
         return out
 
     def label(self, label):
