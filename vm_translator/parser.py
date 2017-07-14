@@ -15,6 +15,16 @@ class Parser():
             arg1 = self.arg1(cmd)
             arg2 = self.arg2(cmd)
             self.writer.write_push_pop(cmd, arg1, arg2)
+        if self.command_type(cmd) == 'C_LABEL':
+            arg1 = self.arg1(cmd)
+            self.writer.write_label(arg1)
+        elif self.command_type(cmd) == 'C_GOTO':
+            arg1 = self.arg1(cmd)
+            self.writer.write_goto(arg1)
+        elif self.command_type(cmd) == 'C_IF':
+            arg1 = self.arg1(cmd)
+            self.writer.write_if_goto(arg1)
+
 
     def parse(self):
         for cmd in self.next_command():

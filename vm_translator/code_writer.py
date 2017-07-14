@@ -32,13 +32,16 @@ class CodeWriter():
         self.write_instructions(instructions)
 
     def write_label(self, label):
-        pass
+        instructions = self.label(label)
+        self.write_instructions(instructions)
 
     def write_goto(self, label):
-        pass
+        instructions = self.goto(label)
+        self.write_instructions(instructions)
 
-    def write_if(self, label):
-        pass
+    def write_if_goto(self, label):
+        instructions = self.if_goto(label)
+        self.write_instructions(instructions)
 
     def write_call(self, func_name, num_args):
         pass
@@ -252,6 +255,22 @@ class CodeWriter():
         out.append('@14')
         out.append('A=M')
         out.append('M=D')  # Set segment[index] = M[SP]
+        return out
+
+    def label(self, label):
+        return ['(%s)' % label]
+
+    def goto(self, label):
+        out = []
+        out.append('@%s' % label)
+        out.append('0;JMP')
+        return out
+
+    def if_goto(self, label):
+        out = []
+        out.extend(self.pop_stack())
+        out.append('@%s' % label)
+        out.append('D;JGT')
         return out
 
     def pop_stack(self):
