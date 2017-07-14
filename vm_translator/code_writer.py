@@ -72,10 +72,7 @@ class CodeWriter():
 
     def add(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -87,10 +84,7 @@ class CodeWriter():
 
     def sub(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -112,10 +106,7 @@ class CodeWriter():
 
     def eq(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -134,10 +125,7 @@ class CodeWriter():
 
     def gt(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -156,10 +144,7 @@ class CodeWriter():
 
     def lt(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -178,10 +163,7 @@ class CodeWriter():
 
     def _and(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -193,10 +175,7 @@ class CodeWriter():
 
     def _or(self, cmd):
         out = []
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
@@ -261,10 +240,7 @@ class CodeWriter():
         out.append('@SP')
         out.append('A=M')  # Get addr of SP
         out.append('M=0')  # Zero out M[SP]
-        out.append('@SP')
-        out.append('M=M-1')  # Decrement SP
-        out.append('A=M')
-        out.append('D=M')  # Set D = M[SP]
+        out.extend(self.pop_stack())
         out.append('@13')
         out.append('M=D')  # R5 = M[SP]
         out.extend(self.deref(segment, index))
@@ -278,6 +254,13 @@ class CodeWriter():
         out.append('M=D')  # Set segment[index] = M[SP]
         return out
 
+    def pop_stack(self):
+        out = []
+        out.append('@SP')
+        out.append('M=M-1')  # Decrement SP
+        out.append('A=M')
+        out.append('D=M')
+        return out
 
     def close(self):
         self.writer.close()
