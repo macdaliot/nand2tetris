@@ -196,7 +196,10 @@ class CodeWriter():
 
     def deref(self, segment, index=0):
         out = []
-        if segment == 'pointer':
+        if segment == 'SP':
+            out.append('@%s' % segment)
+            out.append('A=M')
+        elif segment == 'pointer':
             out.append('@3')
             out.append('D=A')
         elif segment == 'temp':
