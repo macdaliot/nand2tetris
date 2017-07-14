@@ -76,8 +76,7 @@ class CodeWriter():
     def add(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=D+M')  # x + y
         out.append('M=D')  # Save result
         out.extend(self.increment_sp())
@@ -86,8 +85,7 @@ class CodeWriter():
     def sub(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=M-D')  # x - y
         out.append('M=D')  # Save result
         out.extend(self.increment_sp())
@@ -95,8 +93,7 @@ class CodeWriter():
 
     def neg(self, cmd):
         out = []
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('M=-M')  # Set M = -M
         out.extend(self.increment_sp())
         return out
@@ -104,8 +101,7 @@ class CodeWriter():
     def eq(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=M-D')
         out.append('M=-1')
         out.append('@EQ%s' % self.eq_ct)
@@ -120,8 +116,7 @@ class CodeWriter():
     def gt(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=M-D')
         out.append('M=-1')
         out.append('@GT%s' % self.gt_ct)
@@ -136,8 +131,7 @@ class CodeWriter():
     def lt(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=M-D')
         out.append('M=-1')
         out.append('@LT%s' % self.lt_ct)
@@ -152,8 +146,7 @@ class CodeWriter():
     def _and(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=D&M')  # x & y
         out.append('M=D')  # Save result
         out.extend(self.increment_sp())
@@ -162,8 +155,7 @@ class CodeWriter():
     def _or(self, cmd):
         out = []
         out.extend(self.pop_stack())
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=D|M')  # x | y
         out.append('M=D')  # Save result
         out.extend(self.increment_sp())
@@ -171,14 +163,13 @@ class CodeWriter():
 
     def _not(self, cmd):
         out = []
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('M=!M')  # Set M = !M
         out.extend(self.increment_sp())
         return out
 
-    def decrement_sp(self):
-        return ['@SP', 'M=M-1']
+    def decrement_sp_and_deref(self):
+        return ['@SP', 'M=M-1', 'A=M']
 
     def increment_sp(self):
         return ['@SP', 'M=M+1']
@@ -258,8 +249,7 @@ class CodeWriter():
 
     def pop_stack(self):
         out = []
-        out.extend(self.decrement_sp())
-        out.append('A=M')
+        out.extend(self.decrement_sp_and_deref())
         out.append('D=M')
         return out
 
