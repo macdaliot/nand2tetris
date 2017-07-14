@@ -110,8 +110,7 @@ class CodeWriter():
         out.append('M=-1')
         out.append('@EQ%s' % self.eq_ct)
         out.append('D;JEQ')  # If eq jump to EQ
-        out.append('@SP')
-        out.append('A=M')
+        out.extend(self.deref('SP'))
         out.append('M=0')  # Set to false
         out.append('(EQ%s)' % self.eq_ct)
         out.extend(self.increment_sp())
@@ -127,8 +126,7 @@ class CodeWriter():
         out.append('M=-1')
         out.append('@GT%s' % self.gt_ct)
         out.append('D;JGT')  # If greater than jump to GT
-        out.append('@SP')
-        out.append('A=M')
+        out.extend(self.deref('SP'))
         out.append('M=0')  # Set to false
         out.append('(GT%s)' % self.gt_ct)
         out.extend(self.increment_sp())
@@ -144,8 +142,7 @@ class CodeWriter():
         out.append('M=-1')
         out.append('@LT%s' % self.lt_ct)
         out.append('D;JLT')  # If less than jump to LT
-        out.append('@SP')
-        out.append('A=M')
+        out.extend(self.deref('SP'))
         out.append('M=0')  # Set to false
         out.append('(LT%s)' % self.lt_ct)
         out.extend(self.increment_sp())
@@ -200,14 +197,13 @@ class CodeWriter():
         else:
             out.extend(self.deref(segment, index))
             out.append('D=M')
-        out.append('@SP')
-        out.append('A=M')  # Get addr from SP
+        out.extend(self.deref('SP'))  # Get addr from SP
         out.append('M=D')  # Set M[SP] = segment[index] or constant
         out.extend(self.increment_sp())
         out[0] += '  // pushing %s %s' % (segment, index)
         return out
 
-    def deref(self, segment, index):
+    def deref(self, segment, index=0):
         out = []
         if segment == 'pointer':
             out.append('@3')
@@ -220,15 +216,14 @@ class CodeWriter():
         else:
             out.append('@%s' % segment)
             out.append('D=M')
-        if segment != 'static':
+        if segment != 'static' and segment != 'SP':
             out.append('@%s' % index)
             out.append('A=D+A')  # A = segment[index]
         return out
 
     def pop(self, cmd, segment, index):
         out = []
-        out.append('@SP')
-        out.append('A=M')  # Get addr of SP
+        out.extend(self.deref('SP'))  # Get addr of SP
         out.append('M=0')  # Zero out M[SP]
         out.extend(self.pop_stack())
         out.append('@13')
