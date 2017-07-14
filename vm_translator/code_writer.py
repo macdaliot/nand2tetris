@@ -233,6 +233,7 @@ class CodeWriter():
         else:
             out.append('@%s' % segment)
             out.append('D=M')
+        if segment != 'static':
             out.append('@%s' % index)
             out.append('A=D+A')  # A = segment[index]
         return out
