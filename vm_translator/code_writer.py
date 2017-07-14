@@ -99,7 +99,7 @@ class CodeWriter():
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
-        out.append('M=-M')  # Set D = -M[SP]
+        out.append('M=-M')  # Set M = -M
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
         return out
@@ -190,7 +190,7 @@ class CodeWriter():
         out.append('@SP')
         out.append('M=M-1')  # Decrement SP
         out.append('A=M')
-        out.append('M=!M')  # Set D = !M[SP]
+        out.append('M=!M')  # Set M = !M
         out.append('@SP')
         out.append('M=M+1')  # Increment SP
         return out
