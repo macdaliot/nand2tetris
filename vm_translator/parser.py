@@ -10,20 +10,21 @@ class Parser():
         if not self.writer:
             return
         if self.command_type(cmd) == 'C_ARITHMETIC':
-            self.writer.write_arithmetic(cmd)
+            instrs = self.writer.arithmetic(cmd)
         if cmd.startswith('push') or cmd.startswith('pop'):
             arg1 = self.arg1(cmd)
             arg2 = self.arg2(cmd)
-            self.writer.write_push_pop(cmd, arg1, arg2)
+            instrs = self.writer.push_pop(cmd, arg1, arg2)
         if self.command_type(cmd) == 'C_LABEL':
             arg1 = self.arg1(cmd)
-            self.writer.write_label(arg1)
+            instrs = self.writer.label(arg1)
         elif self.command_type(cmd) == 'C_GOTO':
             arg1 = self.arg1(cmd)
-            self.writer.write_goto(arg1)
+            instrs = self.writer.goto(arg1)
         elif self.command_type(cmd) == 'C_IF':
             arg1 = self.arg1(cmd)
-            self.writer.write_if_goto(arg1)
+            instrs = self.writer.if_goto(arg1)
+        self.writer.write_instructions(instrs)
 
 
     def parse(self):

@@ -22,32 +22,6 @@ class CodeWriter():
                 .add('@SP')
                 .add('M=D'))
 
-    def write_arithmetic(self, cmd):
-        instructions = self.arithmetic(cmd)
-        self.write_instructions(instructions)
-
-    def write_push_pop(self, cmd, segment, index):
-        instructions = self.push_pop(cmd, segment, index)
-        self.write_instructions(instructions)
-
-    def write_label(self, label):
-        instructions = self.label(label)
-        self.write_instructions(instructions)
-
-    def write_goto(self, label):
-        instructions = self.goto(label)
-        self.write_instructions(instructions)
-
-    def write_if_goto(self, label):
-        instructions = self.if_goto(label)
-        self.write_instructions(instructions)
-
-    def write_call(self, func_name, num_args):
-        pass
-
-    def write_function(self, func_name, num_locals):
-        pass
-
     def write_instructions(self, instructions):
         for instr in instructions:
             self.writer.write('%s\n' % instr)
