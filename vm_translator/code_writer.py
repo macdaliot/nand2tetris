@@ -16,12 +16,11 @@ class CodeWriter():
         self.write_instructions(instructions)
 
     def init(self):
-        out = []
-        out.append('@256')
-        out.append('D=A')
-        out.append('@SP')
-        out.append('M=D')
-        return out
+        return (instructions()
+                .add('@256')
+                .add('D=A')
+                .add('@SP')
+                .add('M=D').instrs)
 
     def write_arithmetic(self, cmd):
         instructions = self.arithmetic(cmd)
