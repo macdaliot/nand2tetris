@@ -74,99 +74,90 @@ class CodeWriter():
             return self._not(cmd)
 
     def add(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=D+M')  # x + y
-        out.append('M=D')  # Save result
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=D+M')
+                .add('M=D')
+                .increment_sp().instrs)
 
     def sub(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=M-D')  # x - y
-        out.append('M=D')  # Save result
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=M-D')
+                .add('M=D')
+                .increment_sp().instrs)
 
     def neg(self, cmd):
-        out = []
-        out.extend(self.decrement_sp_and_deref())
-        out.append('M=-M')  # Set M = -M
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .decrement_sp_and_deref()
+                .add('M=-M')
+                .increment_sp().instrs)
 
     def eq(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=M-D')
-        out.append('M=-1')
-        out.append('@EQ%s' % self.eq_ct)
-        out.append('D;JEQ')  # If eq jump to EQ
-        out.extend(self.deref('SP'))
-        out.append('M=0')  # Set to false
-        out.append('(EQ%s)' % self.eq_ct)
-        out.extend(self.increment_sp())
         self.eq_ct += 1
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=M-D')
+                .add('M=-1')
+                .add('@EQ%s' % self.eq_ct)
+                .add('D;JEQ')
+                .deref('SP')
+                .add('M=0')
+                .add('(EQ%s)' % self.eq_ct)
+                .increment_sp().instrs)
 
     def gt(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=M-D')
-        out.append('M=-1')
-        out.append('@GT%s' % self.gt_ct)
-        out.append('D;JGT')  # If greater than jump to GT
-        out.extend(self.deref('SP'))
-        out.append('M=0')  # Set to false
-        out.append('(GT%s)' % self.gt_ct)
-        out.extend(self.increment_sp())
         self.gt_ct += 1
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=M-D')
+                .add('M=-1')
+                .add('@GT%s' % self.gt_ct)
+                .add('D;JGT')
+                .deref('SP')
+                .add('M=0')
+                .add('(GT%s)' % self.gt_ct)
+                .increment_sp().instrs)
 
     def lt(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=M-D')
-        out.append('M=-1')
-        out.append('@LT%s' % self.lt_ct)
-        out.append('D;JLT')  # If less than jump to LT
-        out.extend(self.deref('SP'))
-        out.append('M=0')  # Set to false
-        out.append('(LT%s)' % self.lt_ct)
-        out.extend(self.increment_sp())
         self.lt_ct += 1
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=M-D')
+                .add('M=-1')
+                .add('@LT%s' % self.lt_ct)
+                .add('D;JLT')
+                .deref('SP')
+                .add('M=0')
+                .add('(LT%s)' % self.lt_ct)
+                .increment_sp().instrs)
 
     def _and(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=D&M')  # x & y
-        out.append('M=D')  # Save result
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=D&M')
+                .add('M=D')
+                .increment_sp().instrs)
 
     def _or(self, cmd):
-        out = []
-        out.extend(self.pop_stack())
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=D|M')  # x | y
-        out.append('M=D')  # Save result
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .pop_stack()
+                .decrement_sp_and_deref()
+                .add('D=D|M')
+                .add('M=D')
+                .increment_sp().instrs)
 
     def _not(self, cmd):
-        out = []
-        out.extend(self.decrement_sp_and_deref())
-        out.append('M=!M')  # Set M = !M
-        out.extend(self.increment_sp())
-        return out
+        return (instructions()
+                .decrement_sp_and_deref()
+                .add('M=!M')
+                .increment_sp().instrs)
 
     def decrement_sp_and_deref(self):
         return ['@SP', 'M=M-1', 'A=M']
@@ -181,81 +172,98 @@ class CodeWriter():
                 return self.pop(cmd, segment, index)
 
     def push(self, cmd, segment, index):
-        out = []
+        instrs = instructions()
         if segment == 'constant':
-            out.append('@%s' % index)
-            out.append('D=A')
+            (instrs.add('@%s' % index)
+                   .add('D=A'))
         else:
-            out.extend(self.deref(segment, index))
-            out.append('D=M')
-        out.extend(self.deref('SP'))  # Get addr from SP
-        out.append('M=D')  # Set M[SP] = segment[index] or constant
-        out.extend(self.increment_sp())
-        out[0] += '  // pushing %s %s' % (segment, index)
-        return out
-
-    def deref(self, segment, index=0):
-        out = []
-        if segment == 'SP':
-            out.append('@%s' % segment)
-            out.append('A=M')
-        elif segment == 'pointer':
-            out.append('@3')
-            out.append('D=A')
-        elif segment == 'temp':
-            out.append('@5')
-            out.append('D=A')
-        elif segment == 'static':
-            out.append('@%s.%s' % (self.filename, index))
-        else:
-            out.append('@%s' % segment)
-            out.append('D=M')
-        if segment != 'static' and segment != 'SP':
-            out.append('@%s' % index)
-            out.append('A=D+A')  # A = segment[index]
-        return out
+            (instrs.deref(segment, index)
+                   .add('D=M'))
+        return (instrs.deref('SP')
+                      .add('M=D')
+                      .increment_sp().instrs)
 
     def pop(self, cmd, segment, index):
-        out = []
-        out.extend(self.deref('SP'))  # Get addr of SP
-        out.append('M=0')  # Zero out M[SP]
-        out.extend(self.pop_stack())
-        out.append('@13')
-        out.append('M=D')  # R5 = M[SP]
-        out.extend(self.deref(segment, index))
-        out.append('D=A')
-        out.append('@14')
-        out.append('M=D')  # R6 = addr segment[index]
-        out.append('@13')
-        out.append('D=M')  # D = M[SP]
-        out.append('@14')
-        out.append('A=M')
-        out.append('M=D')  # Set segment[index] = M[SP]
-        out[0] += '  // popping %s %s' % (segment, index)
-        return out
+        return (instructions()
+                .deref('SP')
+                .add('M=0')
+                .pop_stack()
+                .add('@13')
+                .add('M=D')
+                .deref(segment, index)
+                .add('D=A')
+                .add('@14')
+                .add('M=D')
+                .add('@13')
+                .add('D=M')
+                .add('@14')
+                .add('A=M')
+                .add('M=D').instrs)
 
     def label(self, label):
         return ['(%s)' % label]
 
     def goto(self, label):
-        out = []
-        out.append('@%s' % label)
-        out.append('0;JMP')
-        return out
+        return (instructions()
+                .add('@%s' % label)
+                .add('0;JMP').instrs)
 
     def if_goto(self, label):
-        out = []
-        out.extend(self.pop_stack())
-        out.append('@%s' % label)
-        out.append('D;JGT')
-        return out
+        return (instructions()
+                .pop_stack()
+                .add('@%s' % label)
+                .add('D;JGT').instrs)
 
     def pop_stack(self):
-        out = []
-        out.extend(self.decrement_sp_and_deref())
-        out.append('D=M')
-        return out
+        return (instructions()
+                .decrement_sp_and_deref()
+                .add('D=M').instrs)
 
     def close(self):
         self.writer.close()
+
+
+class instructions():
+    def __init__(self):
+        self.instrs = []
+
+    def add(self, i):
+        self.instrs.append(i)
+        return self
+
+    def decrement_sp_and_deref(self):
+        self.add('@SP')\
+            .add('M=M-1')\
+            .add('A=M')
+        return self
+
+    def increment_sp(self):
+        self.add('@SP')\
+            .add('M=M+1')
+        return self
+
+    def pop_stack(self):
+        self.decrement_sp_and_deref()\
+            .add('D=M')
+        return self
+
+    def deref(self, segment, index=0):
+        if segment == 'SP':
+            self.add('@%s' % segment)\
+                .add('A=M')
+        elif segment == 'pointer':
+            self.add('@3')\
+                .add('D=A')
+        elif segment == 'temp':
+            self.add('@5')\
+                .add('D=A')
+        elif segment == 'static':
+            self.add('@%s.%s' % (self.filename, index))
+        else:
+            self.add('@%s' % segment)\
+                .add('D=M')
+        if segment != 'static' and segment != 'SP':
+            self.add('@%s' % index)\
+                .add('A=D+A')  # A = segment[index]
+        return self
 
