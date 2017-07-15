@@ -158,12 +158,6 @@ class CodeWriter():
                 .add('M=!M')
                 .increment_sp())
 
-    def decrement_sp_and_deref(self):
-        return ['@SP', 'M=M-1', 'A=M']
-
-    def increment_sp(self):
-        return ['@SP', 'M=M+1']
-
     def push_pop(self, cmd, segment, index):
             if cmd.startswith('push'):
                 return self.push(cmd, segment, index)
