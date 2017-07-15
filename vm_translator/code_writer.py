@@ -20,7 +20,7 @@ class CodeWriter():
                 .add('@256')
                 .add('D=A')
                 .add('@SP')
-                .add('M=D').instrs)
+                .add('M=D'))
 
     def write_arithmetic(self, cmd):
         instructions = self.arithmetic(cmd)
@@ -78,7 +78,7 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D+M')
                 .add('M=D')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def sub(self, cmd):
         return (instructions()
@@ -86,13 +86,13 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=M-D')
                 .add('M=D')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def neg(self, cmd):
         return (instructions()
                 .decrement_sp_and_deref()
                 .add('M=-M')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def eq(self, cmd):
         self.eq_ct += 1
@@ -106,7 +106,7 @@ class CodeWriter():
                 .deref('SP')
                 .add('M=0')
                 .add('(EQ%s)' % self.eq_ct)
-                .increment_sp().instrs)
+                .increment_sp())
 
     def gt(self, cmd):
         self.gt_ct += 1
@@ -120,7 +120,7 @@ class CodeWriter():
                 .deref('SP')
                 .add('M=0')
                 .add('(GT%s)' % self.gt_ct)
-                .increment_sp().instrs)
+                .increment_sp())
 
     def lt(self, cmd):
         self.lt_ct += 1
@@ -134,7 +134,7 @@ class CodeWriter():
                 .deref('SP')
                 .add('M=0')
                 .add('(LT%s)' % self.lt_ct)
-                .increment_sp().instrs)
+                .increment_sp())
 
     def _and(self, cmd):
         return (instructions()
@@ -142,7 +142,7 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D&M')
                 .add('M=D')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def _or(self, cmd):
         return (instructions()
@@ -150,13 +150,13 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D|M')
                 .add('M=D')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def _not(self, cmd):
         return (instructions()
                 .decrement_sp_and_deref()
                 .add('M=!M')
-                .increment_sp().instrs)
+                .increment_sp())
 
     def decrement_sp_and_deref(self):
         return ['@SP', 'M=M-1', 'A=M']
@@ -180,7 +180,7 @@ class CodeWriter():
                    .add('D=M'))
         return (instrs.deref('SP')
                       .add('M=D')
-                      .increment_sp().instrs)
+                      .increment_sp())
 
     def pop(self, cmd, segment, index):
         return (instructions()
@@ -197,7 +197,7 @@ class CodeWriter():
                 .add('D=M')
                 .add('@14')
                 .add('A=M')
-                .add('M=D').instrs)
+                .add('M=D'))
 
     def label(self, label):
         return ['(%s)' % label]
@@ -205,18 +205,18 @@ class CodeWriter():
     def goto(self, label):
         return (instructions()
                 .add('@%s' % label)
-                .add('0;JMP').instrs)
+                .add('0;JMP'))
 
     def if_goto(self, label):
         return (instructions()
                 .pop_stack()
                 .add('@%s' % label)
-                .add('D;JGT').instrs)
+                .add('D;JGT'))
 
     def pop_stack(self):
         return (instructions()
                 .decrement_sp_and_deref()
-                .add('D=M').instrs)
+                .add('D=M'))
 
     def close(self):
         self.writer.close()
@@ -225,6 +225,9 @@ class CodeWriter():
 class instructions():
     def __init__(self):
         self.instrs = []
+
+    def __getitem__(self, i):
+        return self.instrs[i]
 
     def add(self, i):
         self.instrs.append(i)
