@@ -139,16 +139,16 @@ class CodeWriter():
                 return self.pop(cmd, segment, index)
 
     def push(self, cmd, segment, index):
-        instrs = instructions()
+        instrs = (instructions()
+                  .deref(segment, index))
         if segment == 'constant':
-            (instrs.add('@%s' % index)
-                   .add('D=A'))
+            instrs.add('D=A')
         else:
-            (instrs.deref(segment, index)
-                   .add('D=M'))
-        return (instrs.deref('SP')
-                      .add('M=D')
-                      .increment_sp())
+            instrs.add('D=M')
+        return (instrs
+                .deref('SP')
+                .add('M=D')
+                .increment_sp())
 
     def pop(self, cmd, segment, index):
         return (instructions()
@@ -221,6 +221,8 @@ class instructions():
         if segment == 'SP':
             self.add('@%s' % segment)\
                 .add('A=M')
+        elif segment == 'constant':
+            self.add('@%s' % index)
         elif segment == 'pointer':
             self.add('@3')\
                 .add('D=A')
@@ -232,7 +234,7 @@ class instructions():
         else:
             self.add('@%s' % segment)\
                 .add('D=M')
-        if segment != 'static' and segment != 'SP':
+        if segment not in ('SP', 'constant', 'static'):
             self.add('@%s' % index)\
                 .add('A=D+A')  # A = segment[index]
         return self
