@@ -104,8 +104,6 @@ class CodeWriter():
 
     def pop(self, cmd, segment, index):
         return (instructions()
-                .deref('SP')
-                .add('M=0')
                 .pop_stack()
                 .add('@13')
                 .add('M=D')
