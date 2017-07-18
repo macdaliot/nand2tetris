@@ -9,20 +9,20 @@ class Parser():
     def write_command(self, cmd):
         if not self.writer:
             return
-        if self.command_type(cmd) == 'C_ARITHMETIC':
+        c_type = self.command_type(cmd)
+        arg1 = self.arg1(cmd)
+        arg2 = self.arg2(cmd)
+        if c_type == 'C_ARITHMETIC':
             instrs = self.writer.arithmetic(cmd)
-        if cmd.startswith('push') or cmd.startswith('pop'):
-            arg1 = self.arg1(cmd)
-            arg2 = self.arg2(cmd)
-            instrs = self.writer.push_pop(cmd, arg1, arg2)
-        if self.command_type(cmd) == 'C_LABEL':
-            arg1 = self.arg1(cmd)
+        elif c_type == 'C_PUSH':
+            instrs = self.writer.push(cmd, arg1, arg2)
+        elif c_type == 'C_POP':
+            instrs = self.writer.pop(cmd, arg1, arg2)
+        elif c_type == 'C_LABEL':
             instrs = self.writer.label(arg1)
-        elif self.command_type(cmd) == 'C_GOTO':
-            arg1 = self.arg1(cmd)
+        elif c_type == 'C_GOTO':
             instrs = self.writer.goto(arg1)
-        elif self.command_type(cmd) == 'C_IF':
-            arg1 = self.arg1(cmd)
+        elif c_type == 'C_IF':
             instrs = self.writer.if_goto(arg1)
         self.writer.write_instructions(instrs)
 
@@ -74,7 +74,7 @@ class Parser():
         return arg1
 
     def arg2(self, cmd):
-        return cmd.split()[2]
+        return cmd.split()[:3][-1]
 
 
 segment_map = {

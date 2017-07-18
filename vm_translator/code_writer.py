@@ -95,12 +95,6 @@ class CodeWriter():
                 .add('M=!M')
                 .increment_sp())
 
-    def push_pop(self, cmd, segment, index):
-            if cmd.startswith('push'):
-                return self.push(cmd, segment, index)
-            elif cmd.startswith('pop'):
-                return self.pop(cmd, segment, index)
-
     def push(self, cmd, segment, index):
         return (instructions()
                 .get_segment_value(segment, index)
