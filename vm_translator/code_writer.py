@@ -32,11 +32,11 @@ class CodeWriter():
         elif cmd == 'neg':
             return self.neg(cmd)
         elif cmd == 'eq':
-            return self.eq(cmd)
+            return self.cond(cmd)
         elif cmd == 'gt':
-            return self.gt(cmd)
+            return self.cond(cmd)
         elif cmd == 'lt':
-            return self.lt(cmd)
+            return self.cond(cmd)
         elif cmd == 'and':
             return self._and(cmd)
         elif cmd == 'or':
@@ -66,21 +66,7 @@ class CodeWriter():
                 .add('M=-M')
                 .increment_sp())
 
-    def eq(self, cmd):
-        return (instructions()
-                .pop_stack()
-                .decrement_sp_and_deref()
-                .cond(cmd, self)
-                .increment_sp())
-
-    def gt(self, cmd):
-        return (instructions()
-                .pop_stack()
-                .decrement_sp_and_deref()
-                .cond(cmd, self)
-                .increment_sp())
-
-    def lt(self, cmd):
+    def cond(self, cmd):
         return (instructions()
                 .pop_stack()
                 .decrement_sp_and_deref()
