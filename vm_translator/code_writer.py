@@ -3,9 +3,7 @@ class CodeWriter():
         self.outfile = outfile
         if self.outfile:
             self.writer = open(self.outfile, 'w+')
-        self.eq_ct = 0
-        self.gt_ct = 0
-        self.lt_ct = 0
+        self.cond_ct = 0
         self.write_init()
 
     def set_filename(self, filename):
@@ -69,45 +67,24 @@ class CodeWriter():
                 .increment_sp())
 
     def eq(self, cmd):
-        self.eq_ct += 1
         return (instructions()
                 .pop_stack()
                 .decrement_sp_and_deref()
-                .add('D=M-D')
-                .add('M=-1')
-                .add('@EQ%s' % self.eq_ct)
-                .add('D;JEQ')
-                .deref('SP')
-                .add('M=0')
-                .add('(EQ%s)' % self.eq_ct)
+                .cond(cmd, self)
                 .increment_sp())
 
     def gt(self, cmd):
-        self.gt_ct += 1
         return (instructions()
                 .pop_stack()
                 .decrement_sp_and_deref()
-                .add('D=M-D')
-                .add('M=-1')
-                .add('@GT%s' % self.gt_ct)
-                .add('D;JGT')
-                .deref('SP')
-                .add('M=0')
-                .add('(GT%s)' % self.gt_ct)
+                .cond(cmd, self)
                 .increment_sp())
 
     def lt(self, cmd):
-        self.lt_ct += 1
         return (instructions()
                 .pop_stack()
                 .decrement_sp_and_deref()
-                .add('D=M-D')
-                .add('M=-1')
-                .add('@LT%s' % self.lt_ct)
-                .add('D;JLT')
-                .deref('SP')
-                .add('M=0')
-                .add('(LT%s)' % self.lt_ct)
+                .cond(cmd, self)
                 .increment_sp())
 
     def _and(self, cmd):
@@ -240,4 +217,16 @@ class instructions():
             self.add('D=A')
         else:
             self.add('D=M')
+        return self
+
+    def cond(self, condition, writer):
+        condition = condition.upper()
+        writer.cond_ct += 1
+        (self.add('D=M-D')
+             .add('M=-1')
+             .add('@%s%s' % (condition, writer.cond_ct))
+             .add('D;J%s' % condition)
+             .deref('SP')
+             .add('M=0')
+             .add('(%s%s)' % (condition, writer.cond_ct)))
         return self
