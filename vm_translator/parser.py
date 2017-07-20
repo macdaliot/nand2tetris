@@ -24,6 +24,12 @@ class Parser():
             instrs = self.writer.goto(arg1)
         elif c_type == 'C_IF':
             instrs = self.writer.if_goto(arg1)
+        elif c_type == 'C_FUNCTION':
+            instrs = self.writer.function(arg1, arg2)
+        elif c_type == 'C_RETURN':
+            instrs = self.writer._return()
+        elif c_type == 'C_CALL':
+            instrs = self.writer.call(arg1, arg2)
         self.writer.write_instructions(instrs)
 
 

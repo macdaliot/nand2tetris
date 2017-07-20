@@ -122,6 +122,15 @@ class CodeWriter():
                 .add('@%s' % label)
                 .add('D;JGT'))
 
+    def call(self, name, num_args):
+        pass
+
+    def _return(self):
+        pass
+
+    def function(self, name, num_locals):
+        pass
+
     def close(self):
         self.writer.close()
 
