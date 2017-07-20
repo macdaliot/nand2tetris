@@ -122,11 +122,6 @@ class CodeWriter():
                 .add('@%s' % label)
                 .add('D;JGT'))
 
-    def pop_stack(self):
-        return (instructions()
-                .decrement_sp_and_deref()
-                .add('D=M'))
-
     def close(self):
         self.writer.close()
 
