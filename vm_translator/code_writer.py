@@ -123,13 +123,86 @@ class CodeWriter():
                 .add('D;JGT'))
 
     def call(self, name, num_args):
-        pass
+        retr_addr = '%s-return' % name
+        instrs = (instructions()
+                  .add('@%s' % retr_addr)
+                  .add('D=A')
+                  .push_to_stack()
+                  .add('@LCL')
+                  .add('D=M')
+                  .push_to_stack()
+                  .add('@ARG')
+                  .add('D=M')
+                  .push_to_stack()
+                  .add('@THIS')
+                  .add('D=M')
+                  .push_to_stack()
+                  .add('@THAT')
+                  .add('D=M')
+                  .push_to_stack()
+                  .add('@%s' % (num_args - 5))
+                  .add('D=A')
+                  .add('@SP')
+                  .add('D=A-D')
+                  .add('@ARG')
+                  .add('M=D')
+                  .add('@SP')
+                  .add('D=A')
+                  .add('@LCL')
+                  .add('M=D')
+                  .extend(self.goto(name))
+                  .extend(self.label(retr_addr)))
+        return instrs
 
     def _return(self):
-        pass
+        return (instructions().add('@LCL')
+                              .add('D=M')
+                              .add('@13')  # frame
+                              .add('M=D')
+                              .add('@5')
+                              .add('D=D-A')
+                              .add('@14')
+                              .add('M=D')
+                              .pop_stack()  # repos retr value for caller
+                              .add('@ARG')
+                              .add('A=M')
+                              .add('M=D')
+                              .add('D=D+1')  # restore SP of the caller
+                              .add('@SP')
+                              .add('M=D')
+                              .add('@13')  # Restore THAT of the caller
+                              .add('D=M-1')
+                              .add('@THAT')
+                              .add('M=D')
+                              .add('@13')  # Restore THIS of the caller
+                              .add('D=M')
+                              .add('@2')
+                              .add('D=D-A')
+                              .add('@THIS')
+                              .add('M=D')
+                              .add('@13')  # Restore ARG of the caller
+                              .add('D=M')
+                              .add('@3')
+                              .add('D=D-A')
+                              .add('@ARG')
+                              .add('M=D')
+                              .add('@13')  # Restore LCL of the caller
+                              .add('D=M')
+                              .add('@4')
+                              .add('D=D-A')
+                              .add('@LCL')
+                              .add('M=D')
+                              .add('@13')
+                              .add('A=M')
+                              .add('0;JMP'))
 
     def function(self, name, num_locals):
-        pass
+        instrs = instructions().extend(self.label(name))
+        for i in range(num_locals):
+            instrs.add('@0') \
+                  .add('D=A') \
+                  .push_to_stack()
+        return instrs
 
     def close(self):
         self.writer.close()
@@ -144,6 +217,10 @@ class instructions():
 
     def add(self, i):
         self.instrs.append(i)
+        return self
+
+    def extend(self, i):
+        self.instrs.extend(i)
         return self
 
     def decrement_sp_and_deref(self):
@@ -162,7 +239,13 @@ class instructions():
             .add('D=M')
         return self
 
+    def push_to_stack(self):
+        self.add('@SP')\
+            .add('M=D')\
+            .increment_sp()
+
     def deref(self, segment, index=0):
+        # self.add('// deref %s %s' % (segment, index))
         if segment == 'SP':
             self.add('@%s' % segment)\
                 .add('A=M')
