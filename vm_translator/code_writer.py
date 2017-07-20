@@ -105,16 +105,7 @@ class CodeWriter():
     def pop(self, cmd, segment, index):
         return (instructions()
                 .pop_stack()
-                .add('@13')
-                .add('M=D')
                 .deref(segment, index)
-                .add('D=A')
-                .add('@14')
-                .add('M=D')
-                .add('@13')
-                .add('D=M')
-                .add('@14')
-                .add('A=M')
                 .add('M=D'))
 
     def label(self, label):
@@ -174,19 +165,25 @@ class instructions():
         elif segment == 'constant':
             self.add('@%s' % index)
         elif segment == 'pointer':
-            self.add('@3')\
-                .add('D=A')
+            self.add('@%s' % (3 + int(index)))
         elif segment == 'temp':
-            self.add('@5')\
-                .add('D=A')
+            self.add('@%s' % (5 + int(index)))
         elif segment == 'static':
             self.add('@%s.%s' % (self.filename, index))
         else:
-            self.add('@%s' % segment)\
-                .add('D=M')
-        if segment not in ('SP', 'constant', 'static'):
-            self.add('@%s' % index)\
-                .add('A=D+A')  # A = segment[index]
+            (self.add('@13')
+                 .add('M=D')
+                 .add('@%s' % segment)
+                 .add('D=M')
+                 .add('@%s' % index)
+                 .add('A=D+A')  # A = segment[index]
+                 .add('D=A')
+                 .add('@14')
+                 .add('M=D')
+                 .add('@13')
+                 .add('D=M')
+                 .add('@14')
+                 .add('A=M'))
         return self
 
     def get_segment_value(self, segment, index=0):
