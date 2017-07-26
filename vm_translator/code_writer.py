@@ -155,54 +155,55 @@ class CodeWriter():
         return instrs
 
     def _return(self):
-        return (instructions().add('@LCL')
-                              .add('D=M')
-                              .add('@13')  # frame
-                              .add('M=D')
-                              .add('@5')
-                              .add('D=D-A')
-                              .add('@14')
-                              .add('M=D')
-                              .pop_stack()  # repos retr value for caller
-                              .add('@ARG')
-                              .add('A=M')
-                              .add('M=D')
-                              .add('@ARG')
-                              .add('D=A+1')  # restore SP of the caller
-                              .add('D=M')
-                              .add('@SP')
-                              .add('M=D')
-                              .increment_sp()
-                              .add('@13')  # Restore THAT of the caller
-                              .add('A=M-1')
-                              .add('D=M')
-                              .add('@THAT')
-                              .add('M=D')
-                              .add('@13')  # Restore THIS of the caller
-                              .add('D=M')
-                              .add('@2')
-                              .add('A=D-A')
-                              .add('D=M')
-                              .add('@THIS')
-                              .add('M=D')
-                              .add('@13')  # Restore ARG of the caller
-                              .add('D=M')
-                              .add('@3')
-                              .add('A=D-A')
-                              .add('D=M')
-                              .add('@ARG')
-                              .add('M=D')
-                              .add('@13')  # Restore LCL of the caller
-                              .add('D=M')
-                              .add('@4')
-                              .add('A=D-A')
-                              .add('D=M')
-                              .add('@LCL')
-                              .add('M=D')
-                              .add('@13')
-                              .add('A=M')
-                              .add('0;JMP')
-                              )
+        return (instructions()
+                .add('@LCL')
+                .add('D=M')
+                .add('@13')  # frame
+                .add('M=D')
+                .add('@5')
+                .add('D=D-A')
+                .add('@14')
+                .add('M=D')
+                .pop_stack()  # repos retr value for caller
+                .add('@ARG')
+                .add('A=M')
+                .add('M=D')
+                .add('@ARG')
+                .add('D=A+1')  # restore SP of the caller
+                .add('D=M')
+                .add('@SP')
+                .add('M=D')
+                .increment_sp()
+                .add('@13')  # Restore THAT of the caller
+                .add('A=M-1')
+                .add('D=M')
+                .add('@THAT')
+                .add('M=D')
+                .add('@13')  # Restore THIS of the caller
+                .add('D=M')
+                .add('@2')
+                .add('A=D-A')
+                .add('D=M')
+                .add('@THIS')
+                .add('M=D')
+                .add('@13')  # Restore ARG of the caller
+                .add('D=M')
+                .add('@3')
+                .add('A=D-A')
+                .add('D=M')
+                .add('@ARG')
+                .add('M=D')
+                .add('@13')  # Restore LCL of the caller
+                .add('D=M')
+                .add('@4')
+                .add('A=D-A')
+                .add('D=M')
+                .add('@LCL')
+                .add('M=D')
+                .add('@13')
+                .add('A=M')
+                .add('0;JMP')
+                )
 
     def function(self, name, num_locals):
         instrs = instructions().extend(self.label(name))
