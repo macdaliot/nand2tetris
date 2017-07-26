@@ -167,38 +167,46 @@ class CodeWriter():
                               .add('@ARG')
                               .add('A=M')
                               .add('M=D')
-                              .add('D=D+1')  # restore SP of the caller
+                              .add('@ARG')
+                              .add('D=A+1')  # restore SP of the caller
+                              .add('D=M')
                               .add('@SP')
                               .add('M=D')
+                              .increment_sp()
                               .add('@13')  # Restore THAT of the caller
-                              .add('D=M-1')
+                              .add('A=M-1')
+                              .add('D=M')
                               .add('@THAT')
                               .add('M=D')
                               .add('@13')  # Restore THIS of the caller
                               .add('D=M')
                               .add('@2')
-                              .add('D=D-A')
+                              .add('A=D-A')
+                              .add('D=M')
                               .add('@THIS')
                               .add('M=D')
                               .add('@13')  # Restore ARG of the caller
                               .add('D=M')
                               .add('@3')
-                              .add('D=D-A')
+                              .add('A=D-A')
+                              .add('D=M')
                               .add('@ARG')
                               .add('M=D')
                               .add('@13')  # Restore LCL of the caller
                               .add('D=M')
                               .add('@4')
-                              .add('D=D-A')
+                              .add('A=D-A')
+                              .add('D=M')
                               .add('@LCL')
                               .add('M=D')
                               .add('@13')
                               .add('A=M')
-                              .add('0;JMP'))
+                              .add('0;JMP')
+                              )
 
     def function(self, name, num_locals):
         instrs = instructions().extend(self.label(name))
-        for i in range(num_locals):
+        for i in range(int(num_locals)):
             instrs.add('@0') \
                   .add('D=A') \
                   .push_to_stack()
@@ -241,6 +249,7 @@ class instructions():
 
     def push_to_stack(self):
         self.add('@SP')\
+            .add('A=M')\
             .add('M=D')\
             .increment_sp()
 
