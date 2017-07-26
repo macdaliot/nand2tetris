@@ -70,8 +70,8 @@ class Parser():
 
     def arg1(self, cmd):
         cmd_type = self.command_type(cmd)
-        assert cmd_type != 'C_RETURN', \
-            'Cannot get arg1 from return command.'
+        if cmd_type == 'C_RETURN':
+            return
         if cmd_type == 'C_ARITHMETIC':
             return cmd
         arg1 = cmd.split()[1]
