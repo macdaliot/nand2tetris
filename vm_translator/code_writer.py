@@ -251,6 +251,7 @@ class instructions():
             .add('A=M')\
             .add('M=D')\
             .increment_sp()
+        return self
 
     def deref(self, segment, index=0):
         # self.add('// deref %s %s' % (segment, index))
