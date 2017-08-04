@@ -5,6 +5,7 @@ class CodeWriter():
             self.writer = open(self.outfile, 'w+')
         self.cond_ct = 0
         self.write_init()
+        self.write_instructions(self.call('Sys.init', 0))
 
     def set_filename(self, filename):
         self.filename = filename
