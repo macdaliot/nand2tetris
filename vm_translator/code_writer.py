@@ -11,15 +11,12 @@ class CodeWriter():
         self.filename = filename
 
     def write_init(self):
-        instructions = self.init()
-        self.write_instructions(instructions)
-
-    def init(self):
-        return (instructions()
-                .add('@256')
-                .add('D=A')
-                .add('@SP')
-                .add('M=D'))
+        self.write_instructions(
+            instructions()
+            .add('@256')
+            .add('D=A')
+            .add('@SP')
+            .add('M=D'))
 
     def write_instructions(self, instructions):
         for instr in instructions:
