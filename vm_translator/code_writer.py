@@ -141,10 +141,12 @@ class CodeWriter():
                   .add('@THAT')  # push THAT
                   .add('D=M')
                   .push_to_stack()
-                  .add('@%s' % (num_args - 5))
-                  .add('D=A')
-                  .add('@SP')
-                  .add('D=A-D')
+                  .add('@SP')  # Repos ARG = (SP - n - 5)
+                  .add('D=M')
+                  .add('@%s' % int(num_args))
+                  .add('D=D-A')
+                  .add('@5')
+                  .add('D=D-A')
                   .add('@ARG')
                   .add('M=D')
                   .add('@SP')  # Set LCL = SP
