@@ -173,8 +173,8 @@ class CodeWriter():
                 .add('A=M')
                 .add('M=D')
                 .add('@ARG')
-                .add('D=A+1')  # restore SP of the caller
-                .add('D=M')
+                .add('D=M+1')  # restore SP of the caller
+                # .add('D=M')
                 .add('@SP')
                 .add('M=D')
                 .add('@13')  # Restore THAT of the caller
