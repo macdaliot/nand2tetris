@@ -126,19 +126,19 @@ class CodeWriter():
         self.num_func_calls += 1
         retr_addr = '%s-return-%s' % (name, self.num_func_calls)
         instrs = (instructions()
-                  .add('@%s' % retr_addr)
+                  .add('@%s' % retr_addr)  # push retr addr
                   .add('D=A')
                   .push_to_stack()
-                  .add('@LCL')
+                  .add('@LCL')  # push LCL
                   .add('D=M')
                   .push_to_stack()
-                  .add('@ARG')
+                  .add('@ARG')  # push ARG
                   .add('D=M')
                   .push_to_stack()
-                  .add('@THIS')
+                  .add('@THIS')  # push THIS
                   .add('D=M')
                   .push_to_stack()
-                  .add('@THAT')
+                  .add('@THAT')  # push THAT
                   .add('D=M')
                   .push_to_stack()
                   .add('@%s' % (num_args - 5))
@@ -147,7 +147,7 @@ class CodeWriter():
                   .add('D=A-D')
                   .add('@ARG')
                   .add('M=D')
-                  .add('@SP')
+                  .add('@SP')  # Set LCL = SP
                   .add('D=A')
                   .add('@LCL')
                   .add('M=D')
@@ -163,7 +163,7 @@ class CodeWriter():
                 .add('M=D')
                 .add('@5')
                 .add('D=D-A')
-                .add('@14')
+                .add('@14')  # return address
                 .add('M=D')
                 .pop_stack()  # repos retr value for caller
                 .add('@ARG')
