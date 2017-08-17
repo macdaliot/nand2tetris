@@ -8,8 +8,9 @@ class CodeWriter():
         self.write_init()
         self.write_instructions(self.call('Sys.init', 0))
 
-    def set_filename(self, filename):
-        self.filename = filename
+    @classmethod
+    def set_filename(cls, filename):
+        cls.filename = filename
 
     def write_init(self):
         self.write_instructions(
@@ -267,7 +268,7 @@ class instructions():
         elif segment == 'temp':
             self.add('@%s' % (5 + int(index)))
         elif segment == 'static':
-            self.add('@%s.%s' % (self.filename, index))
+            self.add('@%s.%s' % (CodeWriter.filename, index))
         else:
             (self.add('@13')
                  .add('M=D')
