@@ -162,7 +162,8 @@ class CodeWriter():
                 .add('@13')  # frame
                 .add('M=D')
                 .add('@5')
-                .add('D=D-A')
+                .add('A=D-A')
+                .add('D=M')
                 .add('@14')  # return address
                 .add('M=D')
                 .pop_stack()  # repos retr value for caller
