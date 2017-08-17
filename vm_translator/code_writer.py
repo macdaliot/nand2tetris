@@ -174,7 +174,6 @@ class CodeWriter():
                 .add('D=M')
                 .add('@SP')
                 .add('M=D')
-                .increment_sp()
                 .add('@13')  # Restore THAT of the caller
                 .add('A=M-1')
                 .add('D=M')
