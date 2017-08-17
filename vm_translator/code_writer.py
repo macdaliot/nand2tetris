@@ -120,7 +120,7 @@ class CodeWriter():
         return (instructions()
                 .pop_stack()
                 .add('@%s' % label)
-                .add('D;JGT'))
+                .add('D;JNE'))
 
     def call(self, name, num_args):
         self.num_func_calls += 1
