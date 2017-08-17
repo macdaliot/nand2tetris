@@ -4,6 +4,7 @@ class CodeWriter():
         if self.outfile:
             self.writer = open(self.outfile, 'w+')
         self.cond_ct = 0
+        self.num_func_calls = 0
         self.write_init()
         self.write_instructions(self.call('Sys.init', 0))
 
@@ -121,7 +122,8 @@ class CodeWriter():
                 .add('D;JGT'))
 
     def call(self, name, num_args):
-        retr_addr = '%s-return' % name
+        self.num_func_calls += 1
+        retr_addr = '%s-return-%s' % (name, self.num_func_calls)
         instrs = (instructions()
                   .add('@%s' % retr_addr)
                   .add('D=A')
