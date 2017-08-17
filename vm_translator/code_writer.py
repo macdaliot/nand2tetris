@@ -148,7 +148,7 @@ class CodeWriter():
                   .add('@ARG')
                   .add('M=D')
                   .add('@SP')  # Set LCL = SP
-                  .add('D=A')
+                  .add('D=M')
                   .add('@LCL')
                   .add('M=D')
                   .extend(self.goto(name))
