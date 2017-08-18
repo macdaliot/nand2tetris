@@ -238,15 +238,10 @@ class instructions():
         elif segment == 'static':
             self.add('@%s.%s' % (CodeWriter.filename, index))
         else:
-            (self.set_value(13)
-                 .get_value(segment)
-                 .add('@%s' % index)
-                 .add('A=D+A')  # A = segment[index]
-                 .add('D=A')
-                 .set_value(14)
-                 .get_value(13)
-                 .add('@14')
-                 .add('A=M'))
+            self.add('@%s' % segment)
+            for i in range(int(index)):
+                self.add('A=A+1')
+            self.add('A=M')
         return self
 
     def set_value(self, addr):
