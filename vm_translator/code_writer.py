@@ -228,8 +228,7 @@ class instructions():
         return self
 
     def push_to_stack(self):
-        self.add('@SP')\
-            .add('A=M')\
+        self.deref('SP')\
             .add('M=D')\
             .incr_ptr('SP')
         return self
