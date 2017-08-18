@@ -203,8 +203,7 @@ class instructions():
         return self
 
     def decrement_sp_and_deref(self):
-        self.add('@SP')\
-            .add('M=M-1')\
+        self.decr_ptr('SP')\
             .add('A=M')
         return self
 
@@ -216,6 +215,11 @@ class instructions():
     def incr_ptr(self, ptr):
         self.add('@%s' % ptr)\
             .add('M=M+1')
+        return self
+
+    def decr_ptr(self, ptr):
+        self.add('@%s' % ptr)\
+            .add('M=M-1')
         return self
 
     def pop_stack(self):
