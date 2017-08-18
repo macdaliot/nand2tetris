@@ -131,16 +131,14 @@ class CodeWriter():
                   .push_val_at_addr_to_stack('ARG')
                   .push_val_at_addr_to_stack('THIS')
                   .push_val_at_addr_to_stack('THAT')
-                  .add('@SP')  # Repos ARG = (SP - n - 5)
-                  .add('D=M')
+                  .get_value('SP')
                   .add('@%s' % int(num_args))
                   .add('D=D-A')
                   .add('@5')
                   .add('D=D-A')
                   .add('@ARG')
                   .add('M=D')
-                  .add('@SP')  # Set LCL = SP
-                  .add('D=M')
+                  .get_value('SP')
                   .add('@LCL')
                   .add('M=D')
                   .extend(self.goto(name))
@@ -149,8 +147,7 @@ class CodeWriter():
 
     def _return(self):
         return (instructions()
-                .add('@LCL')
-                .add('D=M')
+                .get_value('LCL')
                 .add('@13')  # frame
                 .add('M=D')
                 .add('@5')
@@ -251,17 +248,20 @@ class instructions():
         else:
             (self.add('@13')
                  .add('M=D')
-                 .add('@%s' % segment)
-                 .add('D=M')
+                 .get_value(segment)
                  .add('@%s' % index)
                  .add('A=D+A')  # A = segment[index]
                  .add('D=A')
                  .add('@14')
                  .add('M=D')
-                 .add('@13')
-                 .add('D=M')
+                 .get_value(13)
                  .add('@14')
                  .add('A=M'))
+        return self
+
+    def get_value(self, addr):
+        (self.add('@%s' % addr)
+             .add('D=M'))
         return self
 
     def get_ptr_value(self, segment, index=0):
