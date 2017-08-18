@@ -1,3 +1,7 @@
+FRAME_PTR = 13
+RET_ADDR_PTR = 14
+
+
 class CodeWriter():
     def __init__(self, outfile=None):
         self.outfile = outfile
@@ -143,11 +147,11 @@ class CodeWriter():
     def _return(self):
         return (instructions()
                 .get_value('LCL')
-                .set_value(13)
+                .set_value(FRAME_PTR)
                 .add('@5')
                 .add('A=D-A')
                 .add('D=M')
-                .set_value(14)
+                .set_value(RET_ADDR_PTR)
                 .pop_stack()  # repos retr value for caller
                 .deref_ptr('ARG')
                 .add('M=D')
@@ -158,7 +162,7 @@ class CodeWriter():
                 .restore_from_frame('THIS', 2)
                 .restore_from_frame('ARG', 3)
                 .restore_from_frame('LCL', 4)
-                .deref_ptr(14)
+                .deref_ptr(RET_ADDR_PTR)
                 .add('0;JMP')
                 )
 
@@ -284,7 +288,7 @@ class instructions():
         return self
 
     def restore_from_frame(self, loc, offset):
-        (self.get_value(13)
+        (self.get_value(FRAME_PTR)
              .decr_value(offset)
              .add('A=D')
              .add('D=M')
