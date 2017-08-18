@@ -291,9 +291,9 @@ class instructions():
             .push_to_stack())
         return self
 
-    def restore_from_frame(self, loc, idx):
+    def restore_from_frame(self, loc, offset):
         (self.get_ptr_value(13)
-            .decr_value(idx)
+            .decr_value(offset)
             .add('A=D')
             .add('D=M')
             .set_value(loc))
