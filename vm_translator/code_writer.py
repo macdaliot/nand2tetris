@@ -50,7 +50,7 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D+M')
                 .add('M=D')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def sub(self, cmd):
         return (instructions()
@@ -58,20 +58,20 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=M-D')
                 .add('M=D')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def neg(self, cmd):
         return (instructions()
                 .decrement_sp_and_deref()
                 .add('M=-M')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def cond(self, cmd):
         return (instructions()
                 .pop_stack()
                 .decrement_sp_and_deref()
                 .cond(cmd, self)
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def _and(self, cmd):
         return (instructions()
@@ -79,7 +79,7 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D&M')
                 .add('M=D')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def _or(self, cmd):
         return (instructions()
@@ -87,20 +87,20 @@ class CodeWriter():
                 .decrement_sp_and_deref()
                 .add('D=D|M')
                 .add('M=D')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def _not(self, cmd):
         return (instructions()
                 .decrement_sp_and_deref()
                 .add('M=!M')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def push(self, cmd, segment, index):
         return (instructions()
                 .get_segment_value(segment, index)
                 .deref('SP')
                 .add('M=D')
-                .increment_sp())
+                .incr_ptr('SP'))
 
     def pop(self, cmd, segment, index):
         return (instructions()
@@ -213,8 +213,8 @@ class instructions():
             .add('D=D-A'))
         return self
 
-    def increment_sp(self):
-        self.add('@SP')\
+    def incr_ptr(self, ptr):
+        self.add('@%s' % ptr)\
             .add('M=M+1')
         return self
 
@@ -227,7 +227,7 @@ class instructions():
         self.add('@SP')\
             .add('A=M')\
             .add('M=D')\
-            .increment_sp()
+            .incr_ptr('SP')
         return self
 
     def deref(self, segment, index=0):
