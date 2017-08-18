@@ -126,21 +126,11 @@ class CodeWriter():
         self.num_func_calls += 1
         retr_addr = '%s-return-%s' % (name, self.num_func_calls)
         instrs = (instructions()
-                  .add('@%s' % retr_addr)  # push retr addr
-                  .add('D=A')
-                  .push_to_stack()
-                  .add('@LCL')  # push LCL
-                  .add('D=M')
-                  .push_to_stack()
-                  .add('@ARG')  # push ARG
-                  .add('D=M')
-                  .push_to_stack()
-                  .add('@THIS')  # push THIS
-                  .add('D=M')
-                  .push_to_stack()
-                  .add('@THAT')  # push THAT
-                  .add('D=M')
-                  .push_to_stack()
+                  .push_addr_to_stack(retr_addr)
+                  .push_val_at_addr_to_stack('LCL')
+                  .push_val_at_addr_to_stack('ARG')
+                  .push_val_at_addr_to_stack('THIS')
+                  .push_val_at_addr_to_stack('THAT')
                   .add('@SP')  # Repos ARG = (SP - n - 5)
                   .add('D=M')
                   .add('@%s' % int(num_args))
@@ -174,35 +164,12 @@ class CodeWriter():
                 .add('M=D')
                 .add('@ARG')
                 .add('D=M+1')  # restore SP of the caller
-                # .add('D=M')
                 .add('@SP')
                 .add('M=D')
-                .add('@13')  # Restore THAT of the caller
-                .add('A=M-1')
-                .add('D=M')
-                .add('@THAT')
-                .add('M=D')
-                .add('@13')  # Restore THIS of the caller
-                .add('D=M')
-                .add('@2')
-                .add('A=D-A')
-                .add('D=M')
-                .add('@THIS')
-                .add('M=D')
-                .add('@13')  # Restore ARG of the caller
-                .add('D=M')
-                .add('@3')
-                .add('A=D-A')
-                .add('D=M')
-                .add('@ARG')
-                .add('M=D')
-                .add('@13')  # Restore LCL of the caller
-                .add('D=M')
-                .add('@4')
-                .add('A=D-A')
-                .add('D=M')
-                .add('@LCL')
-                .add('M=D')
+                .restore_from_frame('THAT', 1)
+                .restore_from_frame('THIS', 2)
+                .restore_from_frame('ARG', 3)
+                .restore_from_frame('LCL', 4)
                 .add('@14')
                 .add('A=M')
                 .add('0;JMP')
@@ -241,6 +208,11 @@ class instructions():
             .add('A=M')
         return self
 
+    def decr_value(self, num):
+        (self.add('@%s' % num)
+            .add('D=D-A'))
+        return self
+
     def increment_sp(self):
         self.add('@SP')\
             .add('M=M+1')
@@ -259,7 +231,7 @@ class instructions():
         return self
 
     def deref(self, segment, index=0):
-        # self.add('// deref %s %s' % (segment, index))
+        self.add('// deref %s %s' % (segment, index))
         if segment == 'SP':
             self.add('@%s' % segment)\
                 .add('A=M')
@@ -295,6 +267,11 @@ class instructions():
             self.add('D=M')
         return self
 
+    def get_value_at_addr(self, addr):
+        (self.add('@%s' % addr)
+            .add('D=M'))
+        return self
+
     def cond(self, condition, writer):
         condition = condition.upper()
         writer.cond_ct += 1
@@ -305,4 +282,25 @@ class instructions():
              .deref('SP')
              .add('M=0')
              .add('(%s%s)' % (condition, writer.cond_ct)))
+        return self
+
+    def push_addr_to_stack(self, addr):
+        (self.add('@%s' % addr)
+            .add('D=A')
+            .push_to_stack())
+        return self
+
+    def push_val_at_addr_to_stack(self, addr):
+        (self.add('@%s' % addr)
+            .add('D=M')
+            .push_to_stack())
+        return self
+
+    def restore_from_frame(self, loc, idx):
+        (self.get_value_at_addr(13)
+            .decr_value(idx)
+            .add('A=D')
+            .add('D=M')
+            .add('@%s' % loc)
+            .add('M=D'))
         return self
