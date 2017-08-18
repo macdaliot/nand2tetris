@@ -97,14 +97,14 @@ class CodeWriter():
     def push(self, cmd, segment, index):
         return (instructions()
                 .get_ptr_value(segment, index)
-                .get_addr('SP')
+                .deref_ptr('SP')
                 .add('M=D')
                 .incr_ptr('SP'))
 
     def pop(self, cmd, segment, index):
         return (instructions()
                 .pop_stack()
-                .get_addr(segment, index)
+                .deref_ptr(segment, index)
                 .add('M=D'))
 
     def label(self, label):
@@ -149,8 +149,7 @@ class CodeWriter():
                 .add('D=M')
                 .set_value(14)
                 .pop_stack()  # repos retr value for caller
-                .add('@ARG')
-                .add('A=M')
+                .deref_ptr('ARG')
                 .add('M=D')
                 .add('@ARG')
                 .add('D=M+1')  # restore SP of the caller
@@ -159,8 +158,7 @@ class CodeWriter():
                 .restore_from_frame('THIS', 2)
                 .restore_from_frame('ARG', 3)
                 .restore_from_frame('LCL', 4)
-                .add('@14')
-                .add('A=M')
+                .deref_ptr(14)
                 .add('0;JMP')
                 )
 
@@ -222,19 +220,13 @@ class instructions():
         return self
 
     def push_to_stack(self):
-        self.get_addr('SP')\
+        self.deref_ptr('SP')\
             .add('M=D')\
             .incr_ptr('SP')
         return self
 
-    def get_addr(self, segment, index=0):
-        self.add('// deref %s %s' % (segment, index))
-        if isinstance(segment, int):
-            self.add('@%s' % segment)
-        elif segment == 'SP':
-            self.add('@%s' % segment)\
-                .add('A=M')
-        elif segment == 'constant':
+    def deref_ptr(self, segment, index=0):
+        if segment == 'constant':
             self.add('@%s' % index)
         elif segment == 'pointer':
             self.add('@%s' % (3 + int(index)))
@@ -260,7 +252,7 @@ class instructions():
         return self
 
     def get_ptr_value(self, segment, index=0):
-        self.get_addr(segment, index)
+        self.deref_ptr(segment, index)
         if segment == 'constant':
             self.add('D=A')
         else:
@@ -274,27 +266,27 @@ class instructions():
              .add('M=-1')
              .add('@%s%s' % (condition, writer.cond_ct))
              .add('D;J%s' % condition)
-             .get_addr('SP')
+             .deref_ptr('SP')
              .add('M=0')
              .add('(%s%s)' % (condition, writer.cond_ct)))
         return self
 
     def push_addr_to_stack(self, addr):
         (self.add('@%s' % addr)
-            .add('D=A')
-            .push_to_stack())
+             .add('D=A')
+             .push_to_stack())
         return self
 
     def push_val_at_addr_to_stack(self, addr):
         (self.add('@%s' % addr)
-            .add('D=M')
-            .push_to_stack())
+             .add('D=M')
+             .push_to_stack())
         return self
 
     def restore_from_frame(self, loc, offset):
-        (self.get_ptr_value(13)
-            .decr_value(offset)
-            .add('A=D')
-            .add('D=M')
-            .set_value(loc))
+        (self.get_value(13)
+             .decr_value(offset)
+             .add('A=D')
+             .add('D=M')
+             .set_value(loc))
         return self
