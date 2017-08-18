@@ -196,6 +196,11 @@ class instructions():
             .add('A=M')
         return self
 
+    def incr_value(self, num):
+        (self.add('@%s' % num)
+            .add('D=D+A'))
+        return self
+
     def decr_value(self, num):
         (self.add('@%s' % num)
             .add('D=D-A'))
