@@ -17,8 +17,7 @@ class CodeWriter():
             instructions()
             .add('@256')
             .add('D=A')
-            .add('@SP')
-            .add('M=D'))
+            .set_value('SP'))
 
     def write_instructions(self, instructions):
         for instr in instructions:
@@ -134,11 +133,9 @@ class CodeWriter():
                   .get_value('SP')
                   .decr_value(int(num_args))
                   .decr_value(5)
-                  .add('@ARG')
-                  .add('M=D')
+                  .set_value('ARG')
                   .get_value('SP')
-                  .add('@LCL')
-                  .add('M=D')
+                  .set_value('LCL')
                   .extend(self.goto(name))
                   .extend(self.label(retr_addr)))
         return instrs
@@ -146,21 +143,18 @@ class CodeWriter():
     def _return(self):
         return (instructions()
                 .get_value('LCL')
-                .add('@13')  # frame
-                .add('M=D')
+                .set_value(13)
                 .add('@5')
                 .add('A=D-A')
                 .add('D=M')
-                .add('@14')  # return address
-                .add('M=D')
+                .set_value(14)
                 .pop_stack()  # repos retr value for caller
                 .add('@ARG')
                 .add('A=M')
                 .add('M=D')
                 .add('@ARG')
                 .add('D=M+1')  # restore SP of the caller
-                .add('@SP')
-                .add('M=D')
+                .set_value('SP')
                 .restore_from_frame('THAT', 1)
                 .restore_from_frame('THIS', 2)
                 .restore_from_frame('ARG', 3)
@@ -244,17 +238,20 @@ class instructions():
         elif segment == 'static':
             self.add('@%s.%s' % (CodeWriter.filename, index))
         else:
-            (self.add('@13')
-                 .add('M=D')
+            (self.set_value(13)
                  .get_value(segment)
                  .add('@%s' % index)
                  .add('A=D+A')  # A = segment[index]
                  .add('D=A')
-                 .add('@14')
-                 .add('M=D')
+                 .set_value(14)
                  .get_value(13)
                  .add('@14')
                  .add('A=M'))
+        return self
+
+    def set_value(self, addr):
+        (self.add('@%s' % addr)
+             .add('M=D'))
         return self
 
     def get_value(self, addr):
@@ -299,6 +296,5 @@ class instructions():
             .decr_value(idx)
             .add('A=D')
             .add('D=M')
-            .add('@%s' % loc)
-            .add('M=D'))
+            .set_value(loc))
         return self
