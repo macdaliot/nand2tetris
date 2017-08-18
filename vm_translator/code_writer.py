@@ -97,15 +97,15 @@ class CodeWriter():
 
     def push(self, cmd, segment, index):
         return (instructions()
-                .get_segment_value(segment, index)
-                .deref('SP')
+                .get_ptr_value(segment, index)
+                .get_addr('SP')
                 .add('M=D')
                 .incr_ptr('SP'))
 
     def pop(self, cmd, segment, index):
         return (instructions()
                 .pop_stack()
-                .deref(segment, index)
+                .get_addr(segment, index)
                 .add('M=D'))
 
     def label(self, label):
@@ -228,14 +228,16 @@ class instructions():
         return self
 
     def push_to_stack(self):
-        self.deref('SP')\
+        self.get_addr('SP')\
             .add('M=D')\
             .incr_ptr('SP')
         return self
 
-    def deref(self, segment, index=0):
+    def get_addr(self, segment, index=0):
         self.add('// deref %s %s' % (segment, index))
-        if segment == 'SP':
+        if isinstance(segment, int):
+            self.add('@%s' % segment)
+        elif segment == 'SP':
             self.add('@%s' % segment)\
                 .add('A=M')
         elif segment == 'constant':
@@ -262,17 +264,12 @@ class instructions():
                  .add('A=M'))
         return self
 
-    def get_segment_value(self, segment, index=0):
-        self.deref(segment, index)
+    def get_ptr_value(self, segment, index=0):
+        self.get_addr(segment, index)
         if segment == 'constant':
             self.add('D=A')
         else:
             self.add('D=M')
-        return self
-
-    def get_value_at_addr(self, addr):
-        (self.add('@%s' % addr)
-            .add('D=M'))
         return self
 
     def cond(self, condition, writer):
@@ -282,7 +279,7 @@ class instructions():
              .add('M=-1')
              .add('@%s%s' % (condition, writer.cond_ct))
              .add('D;J%s' % condition)
-             .deref('SP')
+             .get_addr('SP')
              .add('M=0')
              .add('(%s%s)' % (condition, writer.cond_ct)))
         return self
@@ -300,7 +297,7 @@ class instructions():
         return self
 
     def restore_from_frame(self, loc, idx):
-        (self.get_value_at_addr(13)
+        (self.get_ptr_value(13)
             .decr_value(idx)
             .add('A=D')
             .add('D=M')
