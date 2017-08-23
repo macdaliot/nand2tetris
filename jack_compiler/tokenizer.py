@@ -33,6 +33,13 @@ class Tokenizer():
                 yield line.partition('//')[0]
 
 
+class Token():
+    def __init__(self, val, _type):
+        self.value = val
+        self.type = _type
+
+    def __repr__(self):
+        return "'%s'" % self.value
 
 
 if __name__ == '__main__':
