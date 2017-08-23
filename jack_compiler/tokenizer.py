@@ -15,16 +15,24 @@ class Tokenizer():
         self.file = open(file, 'r')
 
     def tokenize(self):
-        sep = ' ,;{}()'
-        token = ''
         for line in self.get_line():
-            for c in line:
-                if c not in sep:
-                    token += c
-                else:
-                    if token:
-                        yield token
-                    token = ''
+            for t in self.get_tokens_from_line(line):
+                yield t
+
+    def get_tokens_from_line(self, line):
+        tokens = []
+        buf = ''
+        for c in line:
+            buf += c
+            if buf in SYMBOLS:
+                tokens.append(Token(buf, 'symbol'))
+                buf = ''
+            elif buf in KEYWORDS:
+                tokens.append(Token(buf, 'keyword'))
+                buf = ''
+            print buf
+
+        return tokens
 
     def get_line(self):
         for line in self.file:
@@ -51,5 +59,5 @@ if __name__ == '__main__':
 
     for file in files:
         for t in Tokenizer(file).tokenize():
-            print t
+            print t.type, t.value
 
