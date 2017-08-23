@@ -2,6 +2,13 @@ import sys
 import os
 import re
 
+KEYWORDS = ['class', 'constructor', 'function', 'method',
+            'field', 'static', 'var', 'int', 'char', 'boolean',
+            'void', 'true', 'false', 'null', 'this', 'let',
+            'do', 'if', 'else', 'while', 'return']
+
+SYMBOLS = '{(})[].,;+-*/&|<>=_'
+
 
 class Tokenizer():
     def __init__(self, file):
