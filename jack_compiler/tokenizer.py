@@ -8,7 +8,7 @@ KEYWORDS = ['class', 'constructor', 'function', 'method',
             'void', 'true', 'false', 'null', 'this', 'let',
             'do', 'if', 'else', 'while', 'return']
 
-SYMBOLS = '{(})[].,;+-*/&|<>=_'
+SYMBOLS = '{(})[].,;+-*/&|<>=_~'
 
 
 class Tokenizer():
