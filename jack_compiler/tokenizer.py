@@ -52,9 +52,9 @@ class Tokenizer():
             elif buf in KEYWORDS:
                 tokens.append(Token(buf, 'keyword'))
                 buf = ''
-            elif next_char != '' and next_char in SYMBOLS:
+            elif next_char == ' ' or (next_char != '' and next_char in SYMBOLS):
                 if buf[0].isdigit():
-                    tokens.append(Token(buf, 'integer'))
+                    tokens.append(Token(buf, 'integerConstant'))
                 else:
                     tokens.append(Token(buf, 'identifier'))
                 buf = ''
