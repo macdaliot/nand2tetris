@@ -94,7 +94,7 @@ def get_files(name):
 
 def tokenize_file(f):
     path = file.rpartition('.')[0]
-    with open(path + '.xml', 'w') as outfile:
+    with open(path + 'T.xml', 'w') as outfile:
         outfile.write('<tokens>\n')
         for t in Tokenizer(file).tokenize():
             out = '<{0}> {1} </{0}>\n'.format(t.type, escape(t.value))
