@@ -38,7 +38,7 @@ class Tokenizer():
         for line in self.file:
             line = line.strip()
             if line and not re.match(r'\s*(/\*\*|//)', line):
-                yield line.partition('//')[0]
+                yield line.partition('//')[0].strip()
 
 
 class Token():
