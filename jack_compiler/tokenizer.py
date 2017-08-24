@@ -70,7 +70,8 @@ class Tokenizer():
     def get_line(self):
         for line in self.file:
             line = line.strip()
-            if line and not re.match(r'\s*(/\*\*|//)', line):
+            if line and not re.match(r'\s*(/\*\*|//)', line)\
+                    and not re.match(r'\s*\*', line):
                 yield line.partition('//')[0].strip()
 
 
