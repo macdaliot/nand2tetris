@@ -28,9 +28,9 @@ class Tokenizer():
             # if line[i] == ' ':
             #     continue
             buf += line[i]
-            next_char = self.get_next_nonspace(line, i)
             # following_char = self.get_next_nonspace(line, i + 1)
             # # print buf, next_char, following_char
+            next_char = self.get_next_char(line, i)
             if buf in SYMBOLS:
                 tokens.append(Token(buf, 'symbol'))
                 buf = ''
@@ -49,13 +49,10 @@ class Tokenizer():
 
         return tokens
 
-    def get_next_nonspace(self, line, i):
-        x = 1
-        if i == len(line) or i + x == len(line):
-            return ''
-        while line[i + x] == ' ':
-            x += 1
-        return line[i + x]
+    def get_next_char(self, line, i):
+        if i + 1 < len(line):
+            return line[i + 1]
+        return ''
 
     def get_line(self):
         for line in self.file:
