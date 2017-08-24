@@ -85,22 +85,28 @@ class Token():
         return "'%s'" % self.value
 
 
-if __name__ == '__main__':
-    infile = sys.argv[1]
-    if os.path.isdir(infile):
-        files = [os.path.join(infile, f) for f in os.listdir(infile)]
-    else:
-        files = [infile]
+def get_files(name):
+        if os.path.isdir(name):
+            files = [os.path.join(name, f) for f in os.listdir(name)]
+        else:
+            files = [name]
+        return [f for f in files if f.endswith('.jack')]
 
-    files = [f for f in files if f.endswith('.jack')]
+
+def tokenize_file(f):
+    path = file.rpartition('.')[0]
+    with open(path + '.xml', 'w') as outfile:
+        outfile.write('<tokens>\n')
+        for t in Tokenizer(file).tokenize():
+            out = '<{0}> {1} </{0}>\n'.format(t.type, escape(t.value))
+            outfile.write(out)
+            print t.type, t.value
+        outfile.write('</tokens>\n')
+
+
+if __name__ == '__main__':
+    name = sys.argv[1]
+    files = get_files(name)
 
     for file in files:
-        path = file.rpartition('.')[0]
-        with open(path + '.xml', 'w') as outfile:
-            outfile.write('<tokens>\n')
-            for t in Tokenizer(file).tokenize():
-                out = '<{0}> {1} </{0}>\n'.format(t.type, escape(t.value))
-                outfile.write(out)
-                print t.type, t.value
-            outfile.write('</tokens>\n')
-
+        tokenize_file(file)
