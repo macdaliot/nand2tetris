@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+from xml.sax.saxutils import escape
 
 KEYWORDS = ['class', 'constructor', 'function', 'method',
             'field', 'static', 'var', 'int', 'char', 'boolean',
@@ -79,7 +80,15 @@ if __name__ == '__main__':
     else:
         files = [infile]
 
+    files = [f for f in files if f.endswith('.jack')]
+
     for file in files:
-        for t in Tokenizer(file).tokenize():
-            print t.type, t.value
+        path = file.rpartition('.')[0]
+        with open(path + '.xml', 'w') as outfile:
+            outfile.write('<tokens>\n')
+            for t in Tokenizer(file).tokenize():
+                out = '<{0}> {1} </{0}>\n'.format(t.type, escape(t.value))
+                outfile.write(out)
+                print t.type, t.value
+            outfile.write('</tokens>\n')
 
