@@ -22,14 +22,29 @@ class Tokenizer():
 
     def get_tokens_from_line(self, line):
         tokens = []
+        in_string = False
         buf = ''
         i = 0
         for i in range(len(line)):
-            # if line[i] == ' ':
-            #     continue
-            buf += line[i]
-            # following_char = self.get_next_nonspace(line, i + 1)
-            # # print buf, next_char, following_char
+            if line[i] == '"' and in_string is False:
+                in_string = True
+                continue
+            if in_string is False and buf == '' and line[i] == ' ':
+                continue
+
+            if line[i] != '"':
+                buf += line[i]
+            print buf
+
+            if in_string is True:
+                if line[i] == '"':
+                    tokens.append(Token(buf, 'stringConstant'))
+                    in_string = False
+                    buf = ''
+                    continue
+                else:
+                    continue
+
             next_char = self.get_next_char(line, i)
             if buf in SYMBOLS:
                 tokens.append(Token(buf, 'symbol'))
