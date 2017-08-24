@@ -34,6 +34,14 @@ class Tokenizer():
 
         return tokens
 
+    def get_next_nonspace(self, line, i):
+        x = 1
+        if i == len(line) or i + x == len(line):
+            return ''
+        while line[i + x] == ' ':
+            x += 1
+        return line[i + x]
+
     def get_line(self):
         for line in self.file:
             line = line.strip()
