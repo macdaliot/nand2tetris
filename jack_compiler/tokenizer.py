@@ -22,15 +22,29 @@ class Tokenizer():
     def get_tokens_from_line(self, line):
         tokens = []
         buf = ''
-        for c in line:
-            buf += c
+        i = 0
+        for i in range(len(line)):
+            # if line[i] == ' ':
+            #     continue
+            buf += line[i]
+            next_char = self.get_next_nonspace(line, i)
+            # following_char = self.get_next_nonspace(line, i + 1)
+            # # print buf, next_char, following_char
             if buf in SYMBOLS:
                 tokens.append(Token(buf, 'symbol'))
                 buf = ''
             elif buf in KEYWORDS:
                 tokens.append(Token(buf, 'keyword'))
                 buf = ''
-            print buf
+            elif next_char != '' and next_char in SYMBOLS:
+                if buf[0].isdigit():
+                    tokens.append(Token(buf, 'integer'))
+                else:
+                    tokens.append(Token(buf, 'identifier'))
+                buf = ''
+
+            # if buf:
+            #     print buf
 
         return tokens
 
