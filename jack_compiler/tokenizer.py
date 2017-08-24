@@ -26,11 +26,12 @@ class Tokenizer():
         buf = ''
         i = 0
         for i in range(len(line)):
-            if line[i] == '"' and in_string is False:
-                in_string = True
-                continue
-            if in_string is False and buf == '' and line[i] == ' ':
-                continue
+            if in_string is False:
+                if line[i] == '"':
+                    in_string = True
+                    continue
+                if buf == '' and line[i] == ' ':
+                    continue
 
             if line[i] != '"':
                 buf += line[i]
@@ -58,9 +59,6 @@ class Tokenizer():
                 else:
                     tokens.append(Token(buf, 'identifier'))
                 buf = ''
-
-            # if buf:
-            #     print buf
 
         return tokens
 
