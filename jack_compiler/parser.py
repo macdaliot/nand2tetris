@@ -21,7 +21,7 @@ class Parser():
 
     def assert_write_next_t(self, value='', _type='', msg=''):
         t = self.tokenizer.next()
-        assert (t.value == value or t.type == _type), msg
+        assert (t.value in value or t.type in _type), '%s:%s: %s: %s' % (self.infile, t.line, t, msg)
         self.write_t(t)
 
     def incr_indent(self):

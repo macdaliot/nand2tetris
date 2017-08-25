@@ -12,8 +12,11 @@ SYMBOLS = '{(})[].,;+-*/&|<>=_~'
 
 
 class Tokenizer():
+    cur_line = 0
+
     def __init__(self, file):
         self.file = open(file, 'r')
+        Tokenizer.cur_line = 0
 
     def tokenize(self):
         for line in self.get_line():
@@ -69,6 +72,7 @@ class Tokenizer():
 
     def get_line(self):
         for line in self.file:
+            Tokenizer.cur_line += 1
             line = line.strip()
             if line and not re.match(r'\s*(/\*\*|//)', line)\
                     and not re.match(r'\s*\*', line):
@@ -79,6 +83,7 @@ class Token():
     def __init__(self, val, _type):
         self.value = val
         self.type = _type
+        self.line = Tokenizer.cur_line
 
     def __repr__(self):
         return "'%s'" % self.value
