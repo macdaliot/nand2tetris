@@ -11,9 +11,10 @@ class Parser():
         self.outfile = open(path + '.xml', 'w')
         self.tokenizer = Tokenizer(infile).tokenize()
         self.tokens = []
+        self.indent = 0
 
     def writeln(self, txt):
-        self.outfile.write('%s\n' % txt)
+        self.outfile.write(' ' * self.indent + '%s\n' % txt)
 
     def write_t(self, t):
         self.writeln('<{0}> {1} </{0}>'.format(t.type, escape(t.value)))
@@ -22,6 +23,13 @@ class Parser():
         t = self.tokenizer.next()
         assert (t.value == value or t.type == _type), msg
         self.write_t(t)
+
+    def incr_indent(self):
+        self.indent += 2
+
+    def decr_indent(self):
+        if self.indent >= 0:
+            self.indent -= 2
 
     def compile_class(self):
         self.writeln('<class>')
