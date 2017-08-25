@@ -31,8 +31,17 @@ class Parser():
         if self.indent >= 0:
             self.indent -= 2
 
+    def write_struct_begin(self, struct):
+        self.writeln('<%s>' % struct)
+        self.incr_indent()
+
+    def write_struct_end(self, struct):
+        self.decr_indent()
+        self.writeln('</%s>' % struct)
+
     def compile_class(self):
-        self.writeln('<class>')
+        self.write_struct_begin('class')
+
         self.assert_write_next_t(value='class',
             msg='File %s should start with a class' % self.infile)
         self.assert_write_next_t(_type='identifier',
@@ -45,10 +54,13 @@ class Parser():
                 self.compile_classvardec()
             if t.value in ('constructor', 'function', 'method'):
                 self.compile_subroutine()
-        self.writeln('</class>')
+        self.write_struct_end('class')
 
     def compile_classvardec(self):
-        t = self.tokens.pop(0)
+        self.write_struct_begin('classVarDec')
+        t = self.tokens.pop()
+        self.write_t(t)
+        self.write_struct_end('classVarDec')
 
     def compile_subroutine(self):
         pass
