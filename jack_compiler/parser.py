@@ -43,7 +43,7 @@ class Parser():
         self.write_struct_begin('class')
 
         self.assert_write_next_t(value='class',
-            msg='File %s should start with a class' % self.infile)
+            msg='File should start with a class')
         self.assert_write_next_t(_type='identifier',
             msg='class keyword should be followed by and identifier')
         self.assert_write_next_t(value='{',
