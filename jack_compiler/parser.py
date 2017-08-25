@@ -2,7 +2,7 @@ import os
 import sys
 from tokenizer import Tokenizer
 from xml.sax.saxutils import escape
-
+from functools import wraps
 
 class Parser():
     def __init__(self, infile):
@@ -31,17 +31,20 @@ class Parser():
         if self.indent >= 0:
             self.indent -= 2
 
-    def write_struct_begin(self, struct):
-        self.writeln('<%s>' % struct)
-        self.incr_indent()
+    def struct(name):
+        def decorator(f):
+            @wraps(f)
+            def wrapper(self, *args, **kwargs):
+                self.writeln('<%s>' % name)
+                self.incr_indent()
+                f(self, *args, **kwargs)
+                self.decr_indent()
+                self.writeln('</%s>' % name)
+            return wrapper
+        return decorator
 
-    def write_struct_end(self, struct):
-        self.decr_indent()
-        self.writeln('</%s>' % struct)
-
+    @struct('class')
     def compile_class(self):
-        self.write_struct_begin('class')
-
         self.assert_write_next_t(value='class',
             msg='File should start with a class')
         self.assert_write_next_t(_type='identifier',
@@ -54,10 +57,9 @@ class Parser():
                 self.compile_classvardec()
             if t.value in ('constructor', 'function', 'method'):
                 self.compile_subroutine()
-        self.write_struct_end('class')
 
+    @struct('classVarDec')
     def compile_classvardec(self):
-        self.write_struct_begin('classVarDec')
         t = self.tokens.pop()
         self.write_t(t)
         self.assert_write_next_t(value=('int', 'char', 'boolean'), _type='identifier',
@@ -68,7 +70,6 @@ class Parser():
             elif t.value == ';':
                 self.write_t(t)
                 break
-        self.write_struct_end('classVarDec')
 
     def compile_subroutine(self):
         pass
