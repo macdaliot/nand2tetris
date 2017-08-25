@@ -60,6 +60,14 @@ class Parser():
         self.write_struct_begin('classVarDec')
         t = self.tokens.pop()
         self.write_t(t)
+        self.assert_write_next_t(value=('int', 'char', 'boolean'), _type='identifier',
+            msg='a type should follow the beginning of a classVarDec')
+        for t in self.tokenizer:
+            if t.value == ',' or t.type == 'identifier':
+                self.write_t(t)
+            elif t.value == ';':
+                self.write_t(t)
+                break
         self.write_struct_end('classVarDec')
 
     def compile_subroutine(self):
